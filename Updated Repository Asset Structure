@@ -1,0 +1,10 @@
+3d-medical-spatial-twin-topology/
+│
+├── assets/
+│   ├── EKTA_AMIMATION_VIDEO_KORE_DAW.mp4   # Part 1: Cardio-Neural Vessel & Antenna Mapping
+│   └── sci_animation_koro_please.mp4       # Part 2: Neural-Binary Data Vortex & Tunneling
+├── src/
+│   └── cardio_neural_solver.py             # Coupled differential equation solver
+├── telemetry/
+│   └── hpc_sync_engine.py                  # 0.00 us drift synchronization engine
+└── README.md                               # Master Project Documentation
