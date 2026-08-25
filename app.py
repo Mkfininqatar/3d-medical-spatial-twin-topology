@@ -91,3 +91,25 @@ if run_simulation:
         
         time.sleep(update_speed)
         st.rerun()
+import streamlit as st
+import requests
+
+st.set_page_config(page_title="3D Medical Spatial Twin Dashboard", layout="wide")
+
+st.title("🧬 3D Medical Spatial Twin Topology Dashboard")
+st.subheader("Cardio-Neural Axis Mapping & Telemetry Simulation")
+
+# FastAPI ব্যাকএন্ডের সাথে কানেক্ট করার চেষ্টা
+try:
+    response = requests.get("http://127.0.0").json()
+    st.success(f"Backend Connected: {response['service']}")
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric(label="Synchronization", value=response["synchronization_metric"])
+    with col2:
+        st.metric(label="Cumulative Drift", value=f"{response['cumulative_drift_us']} μs")
+    with col3:
+        st.metric(label="Location", value=response["processing_node"])
+except:
+    st.warning("FastAPI ব্যাকএন্ড সার্ভারটি চালু নেই। অনুগ্রহ করে অন্য টার্মিনালে `uvicorn main:app --reload` রান করুন।")
