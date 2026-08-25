@@ -113,3 +113,83 @@ try:
         st.metric(label="Location", value=response["processing_node"])
 except:
     st.warning("FastAPI ব্যাকএন্ড সার্ভারটি চালু নেই। অনুগ্রহ করে অন্য টার্মিনালে `uvicorn main:app --reload` রান করুন।")
+import streamlit as st
+import requests
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+import time
+
+st.set_page_config(page_title="3D Medical Spatial Twin Dashboard", layout="wide", page_icon="🧬")
+
+st.title("🧬 3D Medical Spatial Twin Topology Dashboard")
+st.subheader("Cardio-Neural Axis Mapping & Telemetry Simulation (HPC Core)")
+
+# সেশন স্টেটে ডেটা হিস্ট্রি ট্র্যাক করার জন্য
+if "telemetry_history" not in st.session_state:
+    st.session_state.telemetry_history = []
+
+# ১. ব্যাকএন্ড থেকে ডেটা ফেচ করা
+BACKEND_URL = "http://127.0.0.1:8000"
+
+try:
+    # হোম রুট থেকে মেইন ইনফো নেওয়া
+    root_info = requests.get(f"{BACKEND_URL}/").json()
+    # টেলিমেট্রি রুট থেকে সিন্ক ডেটা নেওয়া
+    telemetry_resp = requests.get(f"{BACKEND_URL}/api/telemetry/sync").json()
+    
+    st.success(f"⚡ Connected to HPC Backend Node: {root_info['location']}")
+    
+    # মেট্রিstatics রো
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Mesh Faces", f"{root_info['mesh_specs']['faces']:,}")
+    col2.metric("Mesh Vertices", f"{root_info['mesh_specs']['vertices']:,}")
+    col3.metric("Sync Drift", f"{telemetry_resp['cumulative_drift_us']} μs")
+    col4.metric("Status", "ONLINE", delta="Healthy")
+    
+    # ডেটা হিস্ট্রি আপডেট (টাইম-সিরিজ চার্টের জন্য)
+    current_time = time.strftime("%H:%M:%S")
+    st.session_state.telemetry_history.append({
+        "Time": current_time, 
+        "Drift": telemetry_resp['cumulative_drift_us'],
+        "Load": np.random.uniform(40, 85) # HPC Load Simulation
+    })
+    if len(st.session_state.telemetry_history) > 20:
+        st.session_state.telemetry_history.pop(0)
+        
+    df_history = pd.DataFrame(st.session_state.telemetry_history)
+
+    # ড্যাশবোর্ড লেআউট: ৩ডি গ্রাফ এবং টেলিমেট্রি চার্ট
+    left_col, right_col = st.columns([1, 1])
+    
+    with left_col:
+        st.write("### 🌐 Spatial-Temporal 3D Mesh Topology")
+        # কার্ডিও-নিউরাল অ্যাক্সিসের ৩ডি নোড সিমুলেশন
+        n_nodes = 200
+        z_axis = np.linspace(-5, 5, n_nodes)
+        x_axis = np.sin(z_axis * 2) * np.exp(-np.abs(z_axis)*0.1)
+        y_axis = np.cos(z_axis * 2) * np.exp(-np.abs(z_axis)*0.1)
+        
+        fig_3d = go.Figure(data=[go.Scatter3d(
+            x=x_axis, y=y_axis, z=z_axis,
+            mode='markers+lines',
+            marker=dict(size=4, color=z_axis, colorscale='Viridis', opacity=0.8),
+            line=dict(color='cyan', width=2)
+        )])
+        fig_3d.update_layout(margin=dict(l=0, r=0, b=0, t=0), template="plotly_dark")
+        st.plotly_chart(fig_3d, use_container_width=True)
+
+    with right_col:
+        st.write("### 📈 Real-Time HPC Telemetry Streams")
+        fig_line = px.line(df_history, x="Time", y="Load", title="HPC Node Computing Load (%)")
+        fig_line.update_layout(template="plotly_dark")
+        st.plotly_chart(fig_line, use_container_width=True)
+        
+    # অটো-রিফ্রেশ মেকানিজম (লাইভ ডেটা স্ট্রিমিংয়ের জন্য)
+    time.sleep(1)
+    st.rerun()
+
+except Exception as e:
+    st.error("❌ Failed to connect to the FastAPI Backend Server.")
+    st.info("দয়া করে আরেকটি টার্মিনালে `uvicorn main:app --reload` কমান্ডটি চালু রাখুন।")
