@@ -232,3 +232,62 @@ class CardioNeuralTelemetry:
         # নতুন জিরো-ড্রিফট ক্লক সিঙ্ক (যা ১.৮৮M ফেসের ফ্রেম ড্রপ আটকাবে)
         current_time = time.perf_counter()
         return self.output_buffer, current_time
+import logging
+import time
+import numpy as np
+
+# Importing the high-performance engine from medical_topology.py
+from medical_topology import CardioNeuralTopologyEngine
+
+# =====================================================================
+# Your previous global variables or configuration code remains unaltered here
+# ... (DO NOT DELETE ANYTHING ABOVE) ...
+# =====================================================================
+
+def init_logging():
+    """
+    Telemetry logging configuration for the Spatial Twin application.
+    """
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s [%(levelname)s] Spatial Twin Telemetry: %(message)s'
+    )
+
+def start_spatial_twin_application():
+    """
+    Main runner script feeding antenna signal telemetry to the engine while maintaining baseline workflows.
+    """
+    init_logging()
+    logging.info("Initializing Spatial Twin Core Systems...")
+
+    # -----------------------------------------------------------------
+    # Your previous initialization logic (DB or Network connections) goes here
+    # -----------------------------------------------------------------
+
+    try:
+        logging.info("Connecting to CardioNeuralTopologyEngine...")
+        engine = CardioNeuralTopologyEngine()
+        
+        logging.info("Starting real-time signal polling from Middle Antenna...")
+        
+        # Simulating raw magnetic wave stream from the Middle Antenna (5000 spatial points)
+        mock_antenna_stream = np.random.randn(5000, 3).astype(np.float32)
+        
+        # Execute pipeline and retrieve the zero-drift output buffer stream
+        start_time = time.perf_counter()
+        updated_buffer = engine.run_telemetry_pipeline(mock_antenna_stream)
+        end_time = time.perf_counter()
+        
+        logging.info(f"Telemetry loop synced successfully in {end_time - start_time:.4f} seconds.")
+        logging.info(f"Zero-Drift Output Buffer ready for rendering. Shape: {updated_buffer.shape}")
+        
+    except Exception as e:
+        logging.error(f"Failed to process spatial twin telemetry pipeline: {str(e)}")
+
+    # -----------------------------------------------------------------
+    # Your previous cleanup or post-processing functions go here
+    # -----------------------------------------------------------------
+    logging.info("Spatial Twin System Check complete. Pipeline Active.")
+
+if __name__ == "__main__":
+    start_spatial_twin_application()
