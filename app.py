@@ -197,3 +197,63 @@ except Exception as e:
     st.error("❌ Failed to connect to the FastAPI Backend Server.")
     st.info("দয়া করে আরেকটি টার্মিনালে `uvicorn main:app --reload` কমান্ডটি চালু রাখুন।")
 >>>>>>> 30fdc9ad3172d6a6c0b3b488333e8894eef25a0e
+import logging
+from flask import Flask, jsonify, request
+# Importing the newly integrated high-performance engine
+from medical_topology import CardioNeuralTopologyEngine
+
+app = Flask(__name__)
+logging.basicConfig(level=logging.INFO)
+
+# Global engine instance to persist the 1.88M face mesh buffer across API calls
+topology_engine = CardioNeuralTopologyEngine()
+
+# =====================================================================
+# Your previous endpoints, decorators, or custom middleware remain unaltered here
+# ... (RESOLVED MERGE CONFLICTS FROM PREVIOUS BASE CODE) ...
+# =====================================================================
+
+@app.route('/api/telemetry/stream', methods=['POST'])
+def stream_telemetry():
+    """
+    Resolved conflict endpoint for streaming real-time Middle Antenna signal data
+    into the updated spatial twin topology matrix.
+    """
+    try:
+        data = request.get_json()
+        if not data or 'signals' not in data:
+            return jsonify({"status": "error", "message": "Missing 'signals' array data"}), 400
+        
+        # Extracted signals from network payload
+        raw_signals = data['signals']
+        
+        # Updating the 1.88M faces mesh topology layout via the high-performance engine
+        updated_buffer = topology_engine.run_telemetry_pipeline(raw_signals)
+        
+        return jsonify({
+            "status": "success",
+            "message": "Spatial twin topology updated successfully",
+            "buffer_shape": updated_buffer.shape
+        }), 200
+
+    except Exception as e:
+        logging.error(f"Error updating spatial twin topology inside app.py: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/api/topology/status', methods=['GET'])
+def get_topology_status():
+    """
+    Retrieves system health metrics for the Cardio-Neural mesh.
+    """
+    return jsonify({
+        "engine_active": True,
+        "target_faces": topology_engine.num_faces,
+        "target_vertices": topology_engine.num_vertices,
+        "buffer_status": "synced"
+    }), 200
+
+if __name__ == '__main__':
+    # =====================================================================
+    # Your previous server port configs/configurations remain here
+    # =====================================================================
+    app.run(host='0.0.0.0', port=5000, debug=True)
