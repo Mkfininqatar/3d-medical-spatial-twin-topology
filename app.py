@@ -257,3 +257,68 @@ if __name__ == '__main__':
     # Your previous server port configs/configurations remain here
     # =====================================================================
     app.run(host='0.0.0.0', port=5000, debug=True)
+import logging
+import requests  # Required to call the geolocation API
+from flask import Flask, jsonify, request
+from medical_topology import CardioNeuralTopologyEngine
+
+app = Flask(__name__)
+logging.basicConfig(level=logging.INFO)
+
+topology_engine = CardioNeuralTopologyEngine()
+
+def get_country_from_ip(ip_address):
+    """
+    Fetches the country name from an incoming IP address using a free geolocation API.
+    Handles local development IPs safely.
+    """
+    # Safeguard for local testing (localhost / private network IPs)
+    if ip_address in ['127.0.0.1', 'localhost'] or ip_address.startswith('192.168.'):
+        return "Local Network / Development Environment"
+        
+    try:
+        # Calling free geolocation API
+        response = requests.get(f"http://ip-api.com{ip_address}", timeout=2)
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('status') == 'success':
+                return data.get('country', 'Unknown Country')
+    except Exception as geo_error:
+        logging.error(f"Failed to resolve geolocation for IP {ip_address}: {str(geo_error)}")
+        
+    return "Unknown Location"
+
+@app.route('/api/telemetry/stream', methods=['POST'])
+def stream_telemetry():
+    """
+    Updated streaming endpoint that captures the viewer's IP address 
+    and identifies their country of origin before processing data.
+    """
+    try:
+        # Capturing the incoming client remote IP address
+        # Handles reverse proxies using X-Forwarded-For if deployed on cloud
+        client_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+        
+        # Resolving country name from the captured IP
+        viewer_country = get_country_from_ip(client_ip)
+        
+        # Logging the country info natively into your spatial twin console
+        logging.info(f"[TRAFFIC] Incoming telemetry stream from Country: {viewer_country} (IP: {client_ip})")
+        
+        data = request.get_json()
+        if not data or 'signals' not in data:
+            return jsonify({"status": "error", "message": "Missing 'signals' array data"}), 400
+        
+        raw_signals = data['signals']
+        updated_buffer = topology_engine.run_telemetry_pipeline(raw_signals)
+        
+        return jsonify({
+            "status": "success",
+            "message": "Spatial twin topology updated successfully",
+            "detected_origin": viewer_country,
+            "buffer_shape": updated_buffer.shape
+        }), 200
+
+    except Exception as e:
+        logging.error(f"Error inside app.py: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
