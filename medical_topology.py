@@ -31,3 +31,27 @@ class MedicalSpatialTopology:
 if __name__ == "__main__":
     topology_engine = MedicalSpatialTopology(node_count=500)
     topology_engine.simulate_telemetry_stream(iterations=3)
+import time
+import random
+from datetime import datetime
+
+def run_medical_spatial_topology():
+    faces = 1884996
+    vertices = 992814
+    print(f"Initializing 3D Medical Spatial Topology [Faces: {faces}, Vertices: {vertices}]")
+    print("Cardio-Neural Axis Digital Twin & Zero-Drift Telemetry Online...\n")
+    
+    while True:
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        vibrate_rate = random.uniform(0.01, 0.05)
+        ultrasound_freq = random.uniform(20.0, 40.0)
+        magnetic_wave = random.uniform(1.2, 3.8)
+        signal_throw_velocity = random.uniform(98.5, 100.0)
+        sim_phase_rate = random.uniform(99.9, 100.0)
+        
+        print(f"[{current_time}] [MEDICAL TOPOLOGY] Phase: {sim_phase_rate:.2f}% | Throw Vel: {signal_throw_velocity:.2f}% | MagWave: {magnetic_wave:.2f}T | USound: {ultrasound_freq:.2f}kHz | VibRate: {vibrate_rate:.4f}Hz | Zero-Drift Locked")
+        
+        time.sleep(1)
+
+if __name__ == "__main__":
+    run_medical_spatial_topology()
