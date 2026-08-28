@@ -291,3 +291,72 @@ def start_spatial_twin_application():
 
 if __name__ == "__main__":
     start_spatial_twin_application()
+import asyncio
+import logging
+import time
+import numpy as np
+
+# Importing both the high-performance processor and the live hardware stream client
+from medical_topology import CardioNeuralTopologyEngine
+from antenna_streamer import MiddleAntennaClient
+
+# =====================================================================
+# Your previous global variables, baseline config, or custom functions
+# remain completely untouched and active right here.
+# ... (DO NOT DELETE ANYTHING ABOVE) ...
+# =====================================================================
+
+def init_logging():
+    """
+    Unified telemetry logging configuration across all sub-systems.
+    """
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s [%(levelname)s] Spatial Twin Core: %(message)s'
+    )
+
+async def run_live_spatial_twin_pipeline():
+    """
+    Main asynchronous pipeline engine orchestration.
+    Fetches hardware telemetry from the Middle Antenna client and pipes it into the processing mesh.
+    """
+    init_logging()
+    logging.info("Starting up Spatial Twin High-Performance Architecture...")
+
+    # Instantiating the 1.88M face processor core
+    engine = CardioNeuralTopologyEngine()
+    
+    # Instantiating the direct hardware connection client
+    antenna_client = MiddleAntennaClient()
+    
+    # Establish direct communication link with the Middle Antenna array
+    await antenna_client.connect_hardware()
+    
+    logging.info("Pipeline Fully Active. Beginning zero-drift live streaming...")
+    
+    try:
+        # Pulling continuous asynchronous high-frequency signal bursts from the streaming generator
+        async for live_signals in antenna_client.generate_live_magnetic_waves(batch_size=200):
+            
+            start_time = time.perf_counter()
+            
+            # Streaming the raw hardware wave vectors straight into the 3D topology mesh engine
+            updated_buffer = engine.run_telemetry_pipeline(live_signals)
+            
+            execution_time = time.perf_counter() - start_time
+            
+            # Verification of real-time throughput stability
+            logging.info(f"Stream Frame Processed in {execution_time:.6f}s | Buffer Shape: {updated_buffer.shape}")
+            
+    except KeyboardInterrupt:
+        logging.info("Termination signal received.")
+    except Exception as pipeline_error:
+        logging.error(f"Critical breakdown inside runtime telemetry loop: {str(pipeline_error)}")
+    finally:
+        antenna_client.disconnect_hardware()
+        logging.info("Spatial Twin Pipeline shut down securely.")
+
+if __name__ == "__main__":
+    # Your previous main check or configuration wrapper goes here if needed.
+    # Executing the full asynchronous pipeline orchestration safely.
+    asyncio.run(run_live_spatial_twin_pipeline())
