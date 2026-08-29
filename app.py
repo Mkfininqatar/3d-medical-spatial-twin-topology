@@ -442,3 +442,323 @@ if stream_active:
         time.sleep(0.05)
 else:
     st.info("💡 Turn on 'Start Live Stream' in the left control panel to begin streaming high-frequency data.")
+import time
+import random
+import streamlit as st
+import pandas as pd
+
+# --- STREAMLIT PAGE CONFIG ---
+st.set_page_config(
+    page_title="Brain Underpass Engine - Live Telemetry",
+    page_icon="🧠",
+    layout="wide"
+)
+
+st.title("🧠 Brain Underpass Engine: Live Spatial Telemetry")
+st.markdown("Real-time high-frequency neural antenna tracking and processing throughput.")
+
+# --- CONTROL PANEL (SIDEBAR) ---
+st.sidebar.header("🎛️ Engine Configuration")
+
+# Dynamic voltage control sliders
+resting_potential_mv = st.sidebar.slider(
+    "Set Resting Potential (mV)", 
+    min_value=-90.0, 
+    max_value=-40.0, 
+    value=-70.0, 
+    step=1.0,
+    help="Default baseline potential for resting neurons"
+)
+
+action_potential_mv = st.sidebar.slider(
+    "Set Action Potential (mV)", 
+    min_value=10.0, 
+    max_value=60.0, 
+    value=30.0, 
+    step=1.0,
+    help="Peak threshold potential when an active signal fires"
+)
+
+st.sidebar.divider()
+st.sidebar.header("🕹️ Stream Controls")
+stream_active = st.sidebar.toggle("Start Live Stream", value=True)
+sim_speed = st.sidebar.slider(
+    "Signal Generation Speed", 
+    min_value=10, 
+    max_value=200, 
+    value=80, 
+    step=10, 
+    help="Signals generated per batch frame"
+)
+
+# --- PLACEHOLDERS FOR LIVE UI ELEMENTS ---
+metrics_row = st.columns(3)
+with metrics_row[0]:
+    tps_metric = st.empty()
+with metrics_row[1]:
+    total_metric = st.empty()
+with metrics_row[2]:
+    active_route_metric = st.empty()
+
+st.divider()
+
+chart_row = st.columns(2)
+with chart_row[0]:
+    st.subheader("📈 Live Voltage Activity (mV)")
+    chart_placeholder = st.empty()
+with chart_row[1]:
+    st.subheader("📋 Latest Telemetry Syncs")
+    table_placeholder = st.empty()
+
+# --- BACKEND TELEMETRY PROCESSING ENGINE ---
+def validate_and_filter(raw_signal_input):
+    """Validates and clamps incoming voltage thresholds."""
+    if not isinstance(raw_signal_input, (int, float)):
+        return 0.0
+    return max(0.0, min(float(raw_signal_input), 1.0))
+
+def process_signal(raw_signal, signal_id, resting_mv, action_mv):
+    """Processes signal micro-payload mapping with dynamic voltage parameters."""
+    clean_signal = validate_and_filter(raw_signal)
+    
+    if clean_signal > 0.5:
+        current_mv = action_mv
+        route_status = "EXPRESS_BYPASS"
+    else:
+        current_mv = resting_mv
+        route_status = "RESTING_DEFAULT"
+
+    return {
+        "Signal ID": signal_id,
+        "Input": round(clean_signal, 3),
+        "Voltage (mV)": current_mv,
+        "Routing Path": route_status,
+        "Timestamp": time.strftime("%H:%M:%S")
+    }
+
+# --- STREAM RUNNER ---
+if stream_active:
+    history_buffer = []
+    total_processed = 0
+    
+    while stream_active:
+        start_frame_time = time.time()
+        
+        # Simulate an incoming burst batch of raw signal data (including spatial noise)
+        raw_batch = [random.uniform(0.0, 1.1) if random.random() > 0.05 else "corrupted_noise" for _ in range(sim_speed)]
+        
+        batch_payloads = []
+        express_count = 0
+        
+        for sig in raw_batch:
+            total_processed += 1
+            payload = process_signal(sig, total_processed, resting_potential_mv, action_potential_mv)
+            batch_payloads.append(payload)
+            if payload["Routing Path"] == "EXPRESS_BYPASS":
+                express_count += 1
+                
+        # Append data to rendering history buffer
+        history_buffer.extend(batch_payloads)
+        if len(history_buffer) > 50:
+            history_buffer = history_buffer[-50:]
+            
+        # Calculate real-time throughput metrics
+        end_frame_time = time.time()
+        frame_duration = end_frame_time - start_frame_time
+        calculated_tps = int(len(raw_batch) / (frame_duration + 0.05))  # avoid zero division
+        
+        # Convert buffer to DataFrame for rendering
+        df = pd.DataFrame(history_buffer)
+        
+        # --- UPDATE UI ELEMENTS LIVE ---
+        tps_metric.metric(label="⚡ Current Throughput", value=f"{calculated_tps} TPS", delta="Signals / Sec")
+        total_metric.metric(label="📊 Total Signals Processed", value=f"{total_processed:,}")
+        active_route_metric.metric(label="🧠 Active Express Bypass", value=f"{express_count} in current batch")
+        
+        # Update live charts and tables using the newly calculated slider thresholds
+        if not df.empty:
+            chart_placeholder.line_chart(df.set_index("Signal ID")["Voltage (mV)"])
+            table_placeholder.dataframe(
+                df.tail(8)[["Signal ID", "Input", "Voltage (mV)", "Routing Path"]], 
+                hide_index=True, 
+                use_container_width=True
+            )
+            
+        time.sleep(0.05)
+else:
+    st.info("💡 Turn on 'Start Live Stream' in the left control panel to begin streaming high-frequency data.")
+import time
+import random
+import streamlit as st
+import pandas as pd
+
+# --- STREAMLIT PAGE CONFIG ---
+st.set_page_config(
+    page_title="Brain Underpass Engine - Live Telemetry",
+    page_icon="🧠",
+    layout="wide"
+)
+
+st.title("🧠 Brain Underpass Engine: Live Spatial Telemetry")
+st.markdown("Real-time high-frequency neural antenna tracking with critical anomaly safety systems.")
+
+# --- CONTROL PANEL (SIDEBAR) ---
+st.sidebar.header("🎛️ Engine Configuration")
+
+# Dynamic voltage control sliders
+resting_potential_mv = st.sidebar.slider(
+    "Set Resting Potential (mV)", 
+    min_value=-90.0, 
+    max_value=-40.0, 
+    value=-85.0,  # Retaining your previous selection
+    step=1.0,
+    help="Default baseline potential for resting neurons"
+)
+
+action_potential_mv = st.sidebar.slider(
+    "Set Action Potential (mV)", 
+    min_value=10.0, 
+    max_value=60.0, 
+    value=30.0, 
+    step=1.0,
+    help="Peak threshold potential when an active signal fires"
+)
+
+# New Anomaly Alert Threshold Configuration
+anomaly_threshold_mv = st.sidebar.slider(
+    "🚨 Anomaly Alert Threshold (mV)",
+    min_value=15.0,
+    max_value=55.0,
+    value=25.0,
+    step=1.0,
+    help="If Action Potential exceeds this value, a critical visual alarm will trigger."
+)
+
+st.sidebar.divider()
+st.sidebar.header("🕹️ Stream Controls")
+stream_active = st.sidebar.toggle("Start Live Stream", value=True)
+sim_speed = st.sidebar.slider(
+    "Signal Generation Speed", 
+    min_value=10, 
+    max_value=200, 
+    value=80, 
+    step=10, 
+    help="Signals generated per batch frame"
+)
+
+# --- PLACEHOLDERS FOR ALERT SYSTEM ---
+# This empty container sits right at the top for immediate visibility
+alert_container = st.empty()
+
+# --- PLACEHOLDERS FOR LIVE UI ELEMENTS ---
+metrics_row = st.columns(3)
+with metrics_row:
+    tps_metric = st.empty()
+with metrics_row:
+    total_metric = st.empty()
+with metrics_row:
+    active_route_metric = st.empty()
+
+st.divider()
+
+chart_row = st.columns(2)
+with chart_row:
+    st.subheader("📈 Live Voltage Activity (mV)")
+    chart_placeholder = st.empty()
+with chart_row:
+    st.subheader("📋 Latest Telemetry Syncs")
+    table_placeholder = st.empty()
+
+# --- BACKEND TELEMETRY PROCESSING ENGINE ---
+def validate_and_filter(raw_signal_input):
+    """Validates and clamps incoming voltage thresholds."""
+    if not isinstance(raw_signal_input, (int, float)):
+        return 0.0
+    return max(0.0, min(float(raw_signal_input), 1.0))
+
+def process_signal(raw_signal, signal_id, resting_mv, action_mv):
+    """Processes signal micro-payload mapping with dynamic voltage parameters."""
+    clean_signal = validate_and_filter(raw_signal)
+    
+    if clean_signal > 0.5:
+        current_mv = action_mv
+        route_status = "EXPRESS_BYPASS"
+    else:
+        current_mv = resting_mv
+        route_status = "RESTING_DEFAULT"
+
+    return {
+        "Signal ID": signal_id,
+        "Input": round(clean_signal, 3),
+        "Voltage (mV)": current_mv,
+        "Routing Path": route_status,
+        "Timestamp": time.strftime("%H:%M:%S")
+    }
+
+# --- STREAM RUNNER ---
+if stream_active:
+    history_buffer = []
+    total_processed = 0
+    
+    while stream_active:
+        start_frame_time = time.time()
+        
+        # Simulate an incoming burst batch of raw signal data (including spatial noise)
+        raw_batch = [random.uniform(0.0, 1.1) if random.random() > 0.05 else "corrupted_noise" for _ in range(sim_speed)]
+        
+        batch_payloads = []
+        express_count = 0
+        anomaly_detected = False
+        
+        for sig in raw_batch:
+            total_processed += 1
+            payload = process_signal(sig, total_processed, resting_potential_mv, action_potential_mv)
+            batch_payloads.append(payload)
+            
+            if payload["Routing Path"] == "EXPRESS_BYPASS":
+                express_count += 1
+                # Evaluation: Check if firing voltage exceeds the configured anomalous threshold
+                if payload["Voltage (mV)"] > anomaly_threshold_mv:
+                    anomaly_detected = True
+                
+        # Append data to rendering history buffer
+        history_buffer.extend(batch_payloads)
+        if len(history_buffer) > 50:
+            history_buffer = history_buffer[-50:]
+            
+        # Calculate real-time throughput metrics
+        end_frame_time = time.time()
+        frame_duration = end_frame_time - start_frame_time
+        calculated_tps = int(len(raw_batch) / (frame_duration + 0.05))
+        
+        # Convert buffer to DataFrame for rendering
+        df = pd.DataFrame(history_buffer)
+        
+        # --- FLASH ALARM LOGIC ---
+        if anomaly_detected:
+            # HTML injection inside an error notification to draw maximum focal layout prominence
+            alert_container.error(
+                f"🚨 **CRITICAL VOLTAGE ANOMALY DETECTED** — Firing spikes ({action_potential_mv} mV) "
+                f"have breached the safe threshold barrier ({anomaly_threshold_mv} mV)!"
+            )
+        else:
+            # Clears out the alert view instantly when the engine moves within safety limits
+            alert_container.empty()
+        
+        # --- UPDATE UI ELEMENTS LIVE ---
+        tps_metric.metric(label="⚡ Current Throughput", value=f"{calculated_tps} TPS", delta="Signals / Sec")
+        total_metric.metric(label="📊 Total Signals Processed", value=f"{total_processed:,}")
+        active_route_metric.metric(label="🧠 Active Express Bypass", value=f"{express_count} in current batch")
+        
+        # Update live charts and tables
+        if not df.empty:
+            chart_placeholder.line_chart(df.set_index("Signal ID")["Voltage (mV)"])
+            table_placeholder.dataframe(
+                df.tail(8)[["Signal ID", "Input", "Voltage (mV)", "Routing Path"]], 
+                hide_index=True, 
+                use_container_width=True
+            )
+            
+        time.sleep(0.05)
+else:
+    st.info("💡 Turn on 'Start Live Stream' in the left control panel to begin streaming high-frequency data.")
