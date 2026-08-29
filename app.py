@@ -322,3 +322,123 @@ def stream_telemetry():
     except Exception as e:
         logging.error(f"Error inside app.py: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
+import time
+import asyncio
+import random
+import streamlit as st
+import pandas as pd
+
+# --- STREAMLIT PAGE CONFIG ---
+st.set_page_config(
+    page_title="Brain Underpass Engine - Live Telemetry",
+    page_icon="🧠",
+    layout="wide"
+)
+
+st.title("🧠 Brain Underpass Engine: Live Spatial Telemetry")
+st.markdown("Real-time high-frequency neural antenna tracking and processing throughput.")
+
+# --- INITIALIZE CORE ENGINE STATE ---
+if "resting_potential_mv" not in st.session_state:
+    st.session_state.resting_potential_mv = -70.0
+    st.session_state.action_potential_mv = 30.0
+
+# --- PLACEHOLDERS FOR LIVE UI ELEMENTS ---
+metrics_row = st.columns(3)
+with metrics_row[0]:
+    tps_metric = st.empty()
+with metrics_row[1]:
+    total_metric = st.empty()
+with metrics_row[2]:
+    active_route_metric = st.empty()
+
+st.divider()
+
+chart_row = st.columns([2, 1])
+with chart_row[0]:
+    st.subheader("📈 Live Voltage Activity (mV)")
+    chart_placeholder = st.empty()
+with chart_row[1]:
+    st.subheader("📋 Latest Telemetry Syncs")
+    table_placeholder = st.empty()
+
+# --- BACKEND TELEMETRY PROCESSING ENGINE ---
+def validate_and_filter(raw_signal_input):
+    """Validates and clamps incoming voltage thresholds."""
+    if not isinstance(raw_signal_input, (int, float)):
+        return 0.0
+    return max(0.0, min(float(raw_signal_input), 1.0))
+
+def process_signal(raw_signal, signal_id):
+    """Processes signal micro-payload mapping."""
+    clean_signal = validate_and_filter(raw_signal)
+    
+    if clean_signal > 0.5:
+        current_mv = st.session_state.action_potential_mv
+        route_status = "EXPRESS_BYPASS"
+    else:
+        current_mv = st.session_state.resting_potential_mv
+        route_status = "RESTING_DEFAULT"
+
+    return {
+        "Signal ID": signal_id,
+        "Input": round(clean_signal, 3),
+        "Voltage (mV)": current_mv,
+        "Routing Path": route_status,
+        "Timestamp": time.strftime("%H:%M:%S")
+    }
+
+# --- CONTROL PANEL & STREAM RUNNER ---
+st.sidebar.header("🎛️ Control Panel")
+stream_active = st.sidebar.toggle("Start Live Stream", value=True)
+sim_speed = st.sidebar.slider("Signal Generation Speed", min_value=10, max_value=200, value=80, step=10, help="Signals generated per batch frame")
+
+if stream_active:
+    # Historical tracking for live charts (keeps last 50 data points)
+    history_buffer = deque = []
+    total_processed = 0
+    
+    # Simple loop simulation matching Streamlit execution context
+    while stream_active:
+        start_frame_time = time.time()
+        
+        # Simulate an incoming burst batch of raw signal data (including spatial noise/corrupted tags)
+        raw_batch = [random.uniform(0.0, 1.1) if random.random() > 0.05 else "corrupted_noise" for _ in range(sim_speed)]
+        
+        batch_payloads = []
+        express_count = 0
+        
+        for sig in raw_batch:
+            total_processed += 1
+            payload = process_signal(sig, total_processed)
+            batch_payloads.append(payload)
+            if payload["Routing Path"] == "EXPRESS_BYPASS":
+                express_count += 1
+                
+        # Append data to rendering history buffer
+        history_buffer.extend(batch_payloads)
+        if len(history_buffer) > 50:
+            history_buffer = history_buffer[-50:]
+            
+        # Calculate real-time throughput metrics
+        end_frame_time = time.time()
+        frame_duration = end_frame_time - start_frame_time
+        calculated_tps = int(len(raw_batch) / (frame_duration + 0.05)) # avoid division zero
+        
+        # Convert buffer to DataFrame for Streamlit visual API consumption
+        df = pd.DataFrame(history_buffer)
+        
+        # --- UPDATE UI ELEMENTS LIVE ---
+        tps_metric.metric(label="⚡ Current Throughput", value=f"{calculated_tps} TPS", delta="Signals / Sec")
+        total_metric.metric(label="📊 Total Signals Processed", value=f"{total_processed:,}")
+        active_route_metric.metric(label="🧠 Active Express Bypass", value=f"{express_count} in current batch")
+        
+        # Update live chart
+        if not df.empty:
+            chart_placeholder.line_chart(df.set_index("Signal ID")["Voltage (mV)"])
+            table_placeholder.dataframe(df.tail(8)[["Signal ID", "Input", "Voltage (mV)", "Routing Path"]], hide_index=True, use_container_width=True)
+            
+        # Small intentional yield interval to keep the web application fluid and highly responsive
+        time.sleep(0.05)
+else:
+    st.info("💡 Turn on 'Start Live Stream' in the left control panel to begin streaming high-frequency data.")
