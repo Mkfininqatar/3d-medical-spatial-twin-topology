@@ -960,3 +960,208 @@ if stream_active:
         time.sleep(0.05)
 else:
     st.info("💡 Turn on 'Start Live Stream' in the left control panel to begin streaming high-frequency data.")
+import time
+import random
+import streamlit as st
+import pandas as pd
+
+# --- STREAMLIT PAGE CONFIG ---
+st.set_page_config(
+    page_title="Brain Underpass Engine - Live Telemetry",
+    page_icon="🧠",
+    layout="wide"
+)
+
+st.title("🧠 Brain Underpass Engine: Live Spatial Telemetry")
+st.markdown("Real-time high-frequency neural antenna tracking with automated cooldown and manual override controls.")
+
+# --- INITIALIZE STATE VARIABLES ---
+if "action_potential_mv" not in st.session_state:
+    st.session_state.action_potential_mv = 30.0
+if "anomaly_start_time" not in st.session_state:
+    st.session_state.anomaly_start_time = None
+if "cooldown_triggered" not in st.session_state:
+    st.session_state.cooldown_triggered = False
+
+# --- CONTROL PANEL (SIDEBAR) ---
+st.sidebar.header("🎛️ Engine Configuration")
+
+# Dynamic voltage control sliders
+resting_potential_mv = st.sidebar.slider(
+    "Set Resting Potential (mV)", 
+    min_value=-90.0, 
+    max_value=-40.0, 
+    value=-85.0,
+    step=1.0,
+    help="Default baseline potential for resting neurons"
+)
+
+# Use key binding so Streamlit links slider manipulation with backend programmatic changes
+action_potential_mv = st.sidebar.slider(
+    "Set Action Potential (mV)", 
+    min_value=10.0, 
+    max_value=60.0, 
+    key="action_potential_mv",
+    step=1.0,
+    help="Peak threshold potential when an active signal fires"
+)
+
+anomaly_threshold_mv = st.sidebar.slider(
+    "🚨 Anomaly Alert Threshold (mV)",
+    min_value=15.0,
+    max_value=55.0,
+    value=25.0,
+    step=1.0,
+    help="If Action Potential exceeds this value, a critical visual alarm will trigger."
+)
+
+# --- NEW MANUAL OVERRIDE INTERFACE LAYER ---
+if st.session_state.cooldown_triggered:
+    st.sidebar.warning("⚠️ Engine Throttled due to Mitigation")
+    if st.sidebar.button("🔌 Reset Engine to Standard (30.0 mV)", type="primary"):
+        st.session_state.action_potential_mv = 30.0
+        st.session_state.cooldown_triggered = False
+        st.session_state.anomaly_start_time = None
+        st.rerun()
+
+st.sidebar.divider()
+st.sidebar.header("🕹️ Stream Controls")
+stream_active = st.sidebar.toggle("Start Live Stream", value=True)
+sim_speed = st.sidebar.slider(
+    "Signal Generation Speed", 
+    min_value=10, 
+    max_value=200, 
+    value=80, 
+    step=10, 
+    help="Signals generated per batch frame"
+)
+
+# --- PLACEHOLDERS FOR ALERT SYSTEM ---
+alert_container = st.empty()
+
+# --- PLACEHOLDERS FOR LIVE UI ELEMENTS ---
+metrics_row = st.columns(3)
+with metrics_row:
+    tps_metric = st.empty()
+with metrics_row:
+    total_metric = st.empty()
+with metrics_row:
+    active_route_metric = st.empty()
+
+st.divider()
+
+chart_row = st.columns(2)
+with chart_row:
+    st.subheader("📈 Live Voltage Activity (mV)")
+    chart_placeholder = st.empty()
+with chart_row:
+    st.subheader("📋 Latest Telemetry Syncs")
+    table_placeholder = st.empty()
+
+# --- BACKEND TELEMETRY PROCESSING ENGINE ---
+def validate_and_filter(raw_signal_input):
+    if not isinstance(raw_signal_input, (int, float)):
+        return 0.0
+    return max(0.0, min(float(raw_signal_input), 1.0))
+
+def process_signal(raw_signal, signal_id, resting_mv, action_mv):
+    clean_signal = validate_and_filter(raw_signal)
+    
+    if clean_signal > 0.5:
+        current_mv = action_mv
+        route_status = "EXPRESS_BYPASS"
+    else:
+        current_mv = resting_mv
+        route_status = "RESTING_DEFAULT"
+
+    return {
+        "Signal ID": signal_id,
+        "Input": round(clean_signal, 3),
+        "Voltage (mV)": current_mv,
+        "Routing Path": route_status,
+        "Timestamp": time.strftime("%H:%M:%S")
+    }
+
+# --- STREAM RUNNER ---
+if stream_active:
+    history_buffer = []
+    total_processed = 0
+    
+    while stream_active:
+        start_frame_time = time.time()
+        
+        # Simulate an incoming burst batch of raw signal data (including spatial noise)
+        raw_batch = [random.uniform(0.0, 1.1) if random.random() > 0.05 else "corrupted_noise" for _ in range(sim_speed)]
+        
+        batch_payloads = []
+        express_count = 0
+        anomaly_detected = False
+        
+        for sig in raw_batch:
+            total_processed += 1
+            payload = process_signal(sig, total_processed, resting_potential_mv, st.session_state.action_potential_mv)
+            batch_payloads.append(payload)
+            
+            if payload["Routing Path"] == "EXPRESS_BYPASS":
+                express_count += 1
+                if payload["Voltage (mV)"] > anomaly_threshold_mv:
+                    anomaly_detected = True
+                
+        history_buffer.extend(batch_payloads)
+        if len(history_buffer) > 50:
+            history_buffer = history_buffer[-50:]
+            
+        # Calculate real-time throughput metrics
+        end_frame_time = time.time()
+        frame_duration = end_frame_time - start_frame_time
+        calculated_tps = int(len(raw_batch) / (frame_duration + 0.05))
+        
+        df = pd.DataFrame(history_buffer)
+        
+        # --- TIME-BASED COOLDOWN COGNITION LOOP ---
+        if anomaly_detected:
+            if st.session_state.anomaly_start_time is None:
+                st.session_state.anomaly_start_time = time.time()
+                st.session_state.cooldown_triggered = False
+            
+            elapsed_anomaly_time = time.time() - st.session_state.anomaly_start_time
+            time_remaining = max(0.0, 5.0 - elapsed_anomaly_time)
+            
+            if elapsed_anomaly_time >= 5.0:
+                # CRITICAL BREACH MET: Force action potential down below the threshold
+                st.session_state.action_potential_mv = float(anomaly_threshold_mv - 5.0)
+                st.session_state.anomaly_start_time = None  # Reset tracking clock
+                st.session_state.cooldown_triggered = True
+                st.rerun()  # Forces layout sync to visually reset slider and update override button
+            else:
+                if st.session_state.cooldown_triggered:
+                    alert_container.success("⚙️ **AUTOMATED MITIGATION COMPLETED:** Action potential throttled safely. Use the sidebar to override.")
+                else:
+                    alert_container.error(
+                        f"🚨 **CRITICAL VOLTAGE ANOMALY DETECTED** — Firing spikes ({st.session_state.action_potential_mv} mV) "
+                        f"breached threshold ({anomaly_threshold_mv} mV)! "
+                        f"**Automated Cooldown in {time_remaining:.1f}s**"
+                    )
+        else:
+            st.session_state.anomaly_start_time = None
+            if st.session_state.cooldown_triggered:
+                alert_container.success("⚙️ **AUTOMATED MITIGATION COMPLETED:** Action potential throttled safely. Use the sidebar to override.")
+            else:
+                alert_container.empty()
+        
+        # --- UPDATE UI ELEMENTS LIVE ---
+        tps_metric.metric(label="⚡ Current Throughput", value=f"{calculated_tps} TPS", delta="Signals / Sec")
+        total_metric.metric(label="📊 Total Signals Processed", value=f"{total_processed:,}")
+        active_route_metric.metric(label="🧠 Active Express Bypass", value=f"{express_count} in current batch")
+        
+        if not df.empty:
+            chart_placeholder.line_chart(df.set_index("Signal ID")["Voltage (mV)"])
+            table_placeholder.dataframe(
+                df.tail(8)[["Signal ID", "Input", "Voltage (mV)", "Routing Path"]], 
+                hide_index=True, 
+                use_container_width=True
+            )
+            
+        time.sleep(0.05)
+else:
+    st.info("💡 Turn on 'Start Live Stream' in the left control panel to begin streaming high-frequency data.")
