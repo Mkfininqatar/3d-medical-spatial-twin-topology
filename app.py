@@ -256,7 +256,6 @@ if __name__ == '__main__':
     # =====================================================================
     # Your previous server port configs/configurations remain here
     # =====================================================================
-    app.run(host='0.0.0.0', port=5000, debug=True)
 import logging
 import requests  # Required to call the geolocation API
 from flask import Flask, jsonify, request
