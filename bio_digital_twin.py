@@ -237,3 +237,17 @@ if __name__ == "__main__":
 
     # Scenario 4: Terminal Legacy Transition
     twin.execute_legacy_shutdown()
+internal_heart_clock: float = 1.0  # Biological internal time scale
+emotional_frequency_shift: float = 1.0  # Emotional distortion factor
+def compute_heart_clock_time(self, emotional_intensity: float) -> float:
+    """
+    Calculates the internal heart clock flow vs external time.
+    Emotional spikes distort internal time perception (Kairos).
+    """
+    self.state.emotional_frequency_shift = emotional_intensity
+    # Higher emotional intensity (stress/panic) alters the internal heart clock rate
+    self.state.internal_heart_clock = 1.0 + (emotional_intensity * 0.5)
+    return self.state.internal_heart_clock
+    # Simulating internal heart-clock distortion during critical moments
+heart_clock_rate = twin.compute_heart_clock_time(emotional_intensity=0.85)
+logger.info(f"Internal Heart Clock Flow Rate (Kairos): {heart_clock_rate}x vs External Time")
