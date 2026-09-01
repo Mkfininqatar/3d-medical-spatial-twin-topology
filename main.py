@@ -360,3 +360,22 @@ if __name__ == "__main__":
     # Your previous main check or configuration wrapper goes here if needed.
     # Executing the full asynchronous pipeline orchestration safely.
     asyncio.run(run_live_spatial_twin_pipeline())
+import time
+from power_grid_sync import init_power_grid_telemetry
+from cardio_neural_topology import init_cardio_neural_topology
+
+def run_sovereign_hpc_system():
+    print("=" * 60)
+    print(" [SYSTEM] Initializing Sovereign HPC Cardio-Neural Telemetry Engine")
+    print("=" * 60)
+    
+    init_power_grid_telemetry()
+    print("-" * 60)
+    init_cardio_neural_topology()
+    
+    print("=" * 60)
+    print(" [STATUS] All biological telemetry and power grid nodes synchronized.")
+    print("=" * 60)
+
+if __name__ == "__main__":
+    run_sovereign_hpc_system()
