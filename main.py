@@ -379,3 +379,31 @@ def run_sovereign_hpc_system():
 
 if __name__ == "__main__":
     run_sovereign_hpc_system()
+import time
+from power_grid_sync import init_power_grid_telemetry
+from cardio_neural_topology import init_cardio_neural_topology
+from stream_optimizer import optimize_telemetry_stream
+from system_monitor import monitor_system_health
+from bio_signal_decoder import process_biological_signal_decoding
+
+def run_sovereign_hpc_system():
+    print("=" * 60)
+    print(" [SYSTEM] Initializing Sovereign HPC Cardio-Neural Telemetry Engine")
+    print("=" * 60)
+    
+    init_power_grid_telemetry()
+    print("-" * 60)
+    init_cardio_neural_topology()
+    print("-" * 60)
+    optimize_telemetry_stream()
+    print("-" * 60)
+    process_biological_signal_decoding()
+    print("-" * 60)
+    monitor_system_health()
+    
+    print("=" * 60)
+    print(" [STATUS] All biological telemetry and sovereign nodes fully synchronized.")
+    print("=" * 60)
+
+if __name__ == "__main__":
+    run_sovereign_hpc_system()
