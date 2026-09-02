@@ -7,13 +7,18 @@ matplotlib>=3.5.0
 scipy>=1.18.1
 matplotlib>=3.11.1
 scipy>=1.8.0
-tqdm>=4.64.0
+tqdm>=4.70.0
 numpy>=1.22.0
 matplotlib>=3.11.1
 scipy>=1.8.0
+dependabot/pip/tqdm-gte-4.70.0
+tqdm>=4.70.0
+
+# ৩ডি মেশ (1.88M Faces & 992K Vertices) হ্যান্ডেল করার জন্য নতুন যুক্ত হলো:
 main
 tqdm>=4.64.0
 # ৩ডি মেশ (1.88M Faces & 992K Vertices) হ্যান্ডেল করার জন্য নতুন যুক্ত হলো: dependabot/pip/pycuda-gte-2026.1
+>>> main
 trimesh>=4.0.0
 pycuda>=2026.1
 trimesh>=5.0.0
