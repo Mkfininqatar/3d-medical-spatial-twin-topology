@@ -1,3 +1,10 @@
+ dependabot/pip/numpy-gte-2.5.2
+numpy>=2.5.2
+matplotlib>=3.11.1
+scipy>=1.8.0
+tqdm>=4.64.0
+numpy>=2.5.2
+=======
 numpy>=1.22.0 dependabot/pip/scipy-gte-1.18.1
 matplotlib>=3.5.0
 scipy>=1.18.1
@@ -9,6 +16,7 @@ matplotlib>=3.11.1
 scipy>=1.8.0
 tqdm>=4.70.0
 numpy>=1.22.0
+>>> main
 matplotlib>=3.11.1
 scipy>=1.8.0
 dependabot/pip/tqdm-gte-4.70.0
