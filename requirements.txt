@@ -8,5 +8,5 @@ scipy>=1.8.0
 tqdm>=4.64.0
 
 # ৩ডি মেশ (1.88M Faces & 992K Vertices) হ্যান্ডেল করার জন্য নতুন যুক্ত হলো:
-trimesh>=4.0.0
+trimesh>=5.0.0
 pycuda>=2024.1
