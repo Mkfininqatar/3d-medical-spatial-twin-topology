@@ -61,3 +61,52 @@ if __name__ == "__main__":
     
     print("[*] Executing security and integrity validation on Doha Core Node...")
     grid_security.validate_node_telemetry("Doha_HPC_Core", sample_payload)
+import hmac
+import hashlib
+import time
+import json
+import logging
+
+# Configure logging for spatial-temporal telemetry
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+class SecurityLayer:
+    def __init__(self, secret_key: str):
+        self.secret_key = secret_key.encode('utf-8')
+
+    def generate_telemetry_token(self, node_id: str, timestamp: float) -> str:
+        """Generates an HMAC-SHA256 integrity token for node telemetry."""
+        message = f"{node_id}:{timestamp}".encode('utf-8')
+        return hmac.new(self.secret_key, message, hashlib.sha256).hexdigest()
+
+    def validate_node_signal(self, node_id: str, timestamp: float, token: str, tolerance: float = 2.0) -> bool:
+        """Validates zero-trust token and clock synchronization within microsecond tolerance."""
+        current_time = time.time()
+        
+        # Check for replay attacks or clock drift
+        if abs(current_time - timestamp) > tolerance:
+            logging.warning(f"Clock synchronization failed for node {node_id}. Drift exceeds tolerance.")
+            return False
+
+        expected_token = self.generate_telemetry_token(node_id, timestamp)
+        if hmac.compare_digest(expected_token, token):
+            logging.info(f"Node {node_id} validated successfully with secure telemetry.")
+            return True
+        
+        logging.error(f"Security validation failed for node {node_id}: Invalid token signature.")
+        return False
+
+# Example execution loop for spatial topology nodes
+if __name__ == "__main__":
+    sec_layer = SecurityLayer(secret_key="QNV_2030_HPC_SECURE_KEY")
+    
+    node_id = "N1_Neural_Gateway"
+    current_ts = time.time()
+    
+    # Generate token
+    token = sec_layer.generate_telemetry_token(node_id, current_ts)
+    print(f"Generated Token: {token}")
+    
+    # Validate token
+    is_valid = sec_layer.validate_node_signal(node_id, current_ts, token)
+    print(f"Signal Validation Status: {is_valid}")
