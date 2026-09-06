@@ -18,3 +18,33 @@ class MCGDecoder:
             {'axis': 'z', 'value': 1.8, 'unit': 'pT'}
         ]
         return simulated_magnetic_field
+# mcg_decoder.py
+# Magnetocardiogram (MCG) & Magnetic Wave Signal Decoder for Cardio-Neural Spatial Twin
+
+class MCGDecoder:
+    def __init__(self, sensor_sensitivity_pico_tesla: float = 1.0):
+        self.sensitivity = sensor_sensitivity_pico_tesla
+
+    def decode_magnetic_field(self, raw_mcg_packet: bytes) -> dict:
+        """
+        Decodes raw magnetic signal packets into 3-axis vectors (X, Y, Z) 
+        measured in PicoTesla (pT) for the telemetry grid.
+        """
+        # Parsing raw binary data from HPC telemetry stream
+        # (Placeholder for real signal transformation logic)
+        
+        simulated_vectors = {
+            'axis_x': 5.2 * self.sensitivity,
+            'axis_y': -2.1 * self.sensitivity,
+            'axis_z': 1.8 * self.sensitivity,
+            'unit': 'pT'
+        }
+        return simulated_vectors
+
+    def validate_magnetic_threshold(self, vectors: dict, max_threshold: float = 15.44) -> bool:
+        """
+        Validates whether the magnetic vector magnitude stays within 
+        the divine signal threshold boundary (15.44).
+        """
+        total_magnitude = abs(vectors['axis_x']) + abs(vectors['axis_y']) + abs(vectors['axis_z'])
+        return total_magnitude <= max_threshold
