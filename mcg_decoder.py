@@ -48,3 +48,18 @@ class MCGDecoder:
         """
         total_magnitude = abs(vectors['axis_x']) + abs(vectors['axis_y']) + abs(vectors['axis_z'])
         return total_magnitude <= max_threshold
+class EchoRateProcessor:
+    def __init__(self, baseline_rate: float = 15.44):
+        self.baseline_rate = baseline_rate  # Using the 15.44 divine signal threshold
+
+    def calculate_eco_rate(self, transmitted_timestamp: float, received_timestamp: float) -> float:
+        """
+        Calculates the signal echo reflection rate based on microsecond-level clock sync.
+        """
+        latency = received_timestamp - transmitted_timestamp
+        if latency <= 0:
+            return 0.0
+        
+        # Eco rate calculation scaled with the system constant
+        eco_rate = self.baseline_rate / latency
+        return eco_rate
