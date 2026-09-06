@@ -63,3 +63,16 @@ class EchoRateProcessor:
         # Eco rate calculation scaled with the system constant
         eco_rate = self.baseline_rate / latency
         return eco_rate
+class SignalPasserFilter:
+    def __init__(self, cutoff_frequency: float = 15.44):
+        self.cutoff_frequency = cutoff_frequency  # Using the 15.44 signal constant
+
+    def decode_passer_mode(self, signal_frequency: float) -> str:
+        """
+        Determines whether the signal requires a High-Pass or Low-Pass 
+        decoding approach based on the 15.44 threshold constant.
+        """
+        if signal_frequency > self.cutoff_frequency:
+            return "HIGH_PASS_DECODE (High-Frequency Transient / R-Peak Isolation)"
+        else:
+            return "LOW_PASS_DECODE (Low-Frequency Magnetic Wave / Baseline Smoothing)"
