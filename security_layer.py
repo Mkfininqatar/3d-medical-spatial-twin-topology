@@ -110,3 +110,48 @@ if __name__ == "__main__":
     # Validate token
     is_valid = sec_layer.validate_node_signal(node_id, current_ts, token)
     print(f"Signal Validation Status: {is_valid}")
+# Revised 'security_layer.py' (Integrated)
+
+import hmac
+import hashlib
+from ecg_decoder import ECGDecoder  # Import the new decoder
+from ecg_decoder import MCGDecoder  # Import the new decoder
+
+DIVINE_SIGNAL_THRESHOLD = 15.44
+
+class SecurityLayer:
+    def __init__(self, secret_key: bytes):
+        self.secret_key = secret_key
+        self.ecg_decoder = ECGDecoder()
+        self.mcg_decoder = MCGDecoder()
+
+    def validate_and_process_telemetry(self, packet_data: bytes, received_hmac: str, twin_node_vitals: float):
+        """
+        Validates packet integrity and extracts vital signs (HR & Magnetic).
+        """
+        # 1. Validate HMAC (Security Check)
+        computed_hmac = hmac.new(self.secret_key, packet_data, hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(computed_hmac, received_hmac):
+            return "ERROR: HMAC Validation Failed", None, None
+
+        # 2. Decode Physiological Data (Feature Extraction)
+        current_heart_rate = self.ecg_decoder.decode_bpm(packet_data)
+        current_magnetic_field = self.mcg_decoder.decode_magnetic_field(packet_data)
+
+        # 3. Apply Digital Twin Threshold (Integrity Check)
+        hr_within_tolerance = self.ecg_decoder.validate_against_digital_twin(current_heart_rate, twin_node_vitals)
+
+        if not hr_within_tolerance:
+            print(f"WARNING: Heart Rate Mismatch! Twin: {twin_node_vitals}, Actual: {current_heart_rate}")
+            # In a real scenario, this might trigger an alert or drop the packet.
+
+        return "SUCCESS", current_heart_rate, current_magnetic_field
+
+# Example Usage (in your main application):
+# security_system = SecurityLayer(secret_key=b"super_secret_key")
+# status, hr, mcg = security_system.validate_and_process_telemetry(
+#     packet_data=b"...",  # Actual raw data
+#     received_hmac="...", # Received HMAC
+#     twin_node_vitals=76.0 # Value from your 'Cardio-Neural Axis Spatial Topology' digital twin
+# )
+# print(f"Status: {status}, Extracted BPM: {hr}, Magnetic Field Vectors: {mcg}")
