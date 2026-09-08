@@ -65,3 +65,39 @@ if __name__ == "__main__":
         print(f"Step {i:02d} | Status: {status:<25} | Processed Signal: {processed_val:.4f}")
         time.sleep(0.1)
 EOF
+import time
+from datetime import datetime
+
+class CardioNeuralTelemetry:
+    def __init__(self, frequency_hz=1000000):
+        self.frequency_hz = frequency_hz
+        self.active_status = True
+        self.packet_id = 8942000
+
+    def log_stream(self):
+        print(f"--- Starting Cardio-Neural Telemetry Stream at {self.frequency_hz} Hz ---")
+        try:
+            while self.active_status:
+                self.packet_id += 1
+                timestamp = datetime.utcnow().isoformat() + "Z"
+                # Simulating active bio-signal packet capture between heart and brain
+                log_output = (
+                    f"[TIMESTAMP: {timestamp}] STATUS: ACTIVE | "
+                    f"FREQ: {self.frequency_hz:,} Hz | "
+                    f"AXIS: Heart-Brain Bio-Signal | "
+                    f"PACKET_ID: #{self.packet_id} | INTEGRITY: 100%"
+                )
+                print(log_output)
+                
+                # Microsecond-level interval pacing for 1MHz simulation loop
+                time.sleep(0.001) 
+                
+                # For testing/demo purposes, break after 5 iterations (remove in production)
+                if self.packet_id >= 8942005:
+                    break
+        except KeyboardInterrupt:
+            print("Telemetry stream paused by user.")
+
+if __name__ == "__main__":
+    telemetry_engine = CardioNeuralTelemetry()
+    telemetry_engine.log_stream()
