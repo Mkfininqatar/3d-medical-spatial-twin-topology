@@ -1,0 +1,27 @@
+Target: High-Performance Computing (HPC) Telemetry & Precise Timestamp Locking
+import time
+import logging
+from typing import Dict, Any
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
+class MicrosecondClockSync:
+    def __init__(self, node_id: str = "Doha-Core-01"):
+        self.node_id = node_id
+        self.reference_offset_ns = 0
+
+    def calibrate_clock(self, external_reference_ns: int = None) -> int:
+        """Calibrates local performance counter with high-precision timestamp reference."""
+        local_ns = time.perf_counter_ns()
+        if external_reference_ns:
+            self.reference_offset_ns = external_reference_ns - local_ns
+        logging.info(f"Node {self.node_id} synchronized. Offset: {self.reference_offset_ns} ns")
+        return self.get_synchronized_timestamp()
+
+    def get_synchronized_timestamp(self) -> int:
+        """Returns microsecond-level synchronized timestamp."""
+        return (time.perf_counter_ns() + self.reference_offset_ns) // 1_000
+
+if __name__ == "__main__":
+    sync = MicrosecondClockSync()
+    print("Calibrated timestamp (microseconds):", sync.calibrate_clock())
