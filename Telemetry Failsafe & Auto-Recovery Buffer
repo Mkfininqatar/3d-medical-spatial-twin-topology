@@ -1,0 +1,41 @@
+Target: Global Node Connectivity Resilience (Doha, London, New York, Singapore)
+import time
+import logging
+from collections import deque
+from typing import Callable, Any
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
+class TelemetryFailsafeBuffer:
+    def __init__(self, max_buffer_size: int = 10000):
+        self.buffer = deque(maxlen=max_buffer_size)
+        self.is_connected = True
+
+    def emit_telemetry(self, payload: Dict[str, Any], transmit_func: Callable[[Dict[str, Any]], bool]) -> None:
+        """Attempts to send telemetry. If transmission fails, buffers payload for auto-recovery."""
+        if self.is_connected:
+            try:
+                success = transmit_func(payload)
+                if not success:
+                    raise ConnectionError("Transmission returned failure status.")
+                self._flush_buffer(transmit_func)
+            except Exception as e:
+                logging.warning(f"Connection dropped: {e}. Buffering payload locally.")
+                self.is_connected = False
+                self.buffer.append(payload)
+        else:
+            self.buffer.append(payload)
+            self._attempt_reconnection(transmit_func)
+
+    def _flush_buffer(self, transmit_func: Callable[[Dict[str, Any]], bool]) -> None:
+        """Flushes buffered telemetry once connection is re-established."""
+        while self.buffer and self.is_connected:
+            item = self.buffer[0]
+            try:
+                if transmit_func(item):
+                    self.buffer.popleft()
+                else:
+                    break
+            except Exception:
+                break
+
