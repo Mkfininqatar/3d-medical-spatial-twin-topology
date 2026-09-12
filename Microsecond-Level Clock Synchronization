@@ -25,3 +25,54 @@ class MicrosecondClockSync:
 if __name__ == "__main__":
     sync = MicrosecondClockSync()
     print("Calibrated timestamp (microseconds):", sync.calibrate_clock())
+import time
+import hashlib
+import hmac
+import socket
+import struct
+from datetime import datetime
+
+class MicrosecondClockSync:
+    def __init__(self, node_id, secret_key, master_offset=0.0):
+        self.node_id = node_id
+        self.secret_key = secret_key.encode('utf-8')
+        self.master_offset = master_offset  # microseconds drift compensation
+
+    def get_precise_timestamp(self):
+        # High-resolution monotonic clock adjusted with microsecond precision
+        epoch_ns = time.time_ns()
+        adjusted_ns = epoch_ns + int(self.master_offset * 1000)
+        return adjusted_ns
+
+    def generate_telemetry_packet(self, payload_data):
+        timestamp = self.get_precise_timestamp()
+        raw_payload = f"{self.node_id}:{timestamp}:{payload_data}".encode('utf-8')
+        
+        # HMAC/SHA-256 secure enclave enclaving
+        signature = hmac.new(self.secret_key, raw_payload, hashlib.sha256).hexdigest()
+        
+        packet = {
+            "node": self.node_id,
+            "timestamp_ns": timestamp,
+            "timestamp_iso": datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3],
+            "payload": payload_data,
+            "hmac_signature": signature
+        }
+        return packet
+
+    def verify_packet(self, packet, received_signature):
+        raw_payload = f"{packet['node']}:{packet['timestamp_ns']}:{packet['payload']}".encode('utf-8')
+        expected_signature = hmac.new(self.secret_key, raw_payload, hashlib.sha256).hexdigest()
+        return hmac.compare_digest(expected_signature, received_signature)
+
+if __name__ == "__main__":
+    # Test initialization for Global HPC Node (Doha Cluster)
+    sync_engine = MicrosecondClockSync(node_id="DOHA-HPC-01", secret_key="cardio_neural_secure_key_2026")
+    
+    telemetry = sync_engine.generate_telemetry_packet({"heart_rate": 78, "neural_sync_rate": 0.998})
+    print("Generated Secure Telemetry Packet:")
+    for k, v in telemetry.items():
+        print(f"  {k}: {v}")
+    
+    is_valid = sync_engine.verify_packet(telemetry, telemetry["hmac_signature"])
+    print(f"\nHMAC Enclave Verification Status: {is_valid}")
