@@ -19,4 +19,66 @@ class NationalVisionEnclaveSecurity:
         """Validates payload integrity in strict compliance with data security protocols."""
         expected_sig = self.sign_telemetry_payload(payload_str)
         return hmac.compare_digest(expected_sig, received_signature)
+import hashlib
+import hmac
+import json
+import base64
+from datetime import datetime
 
+class NationalVisionComplianceEnclave:
+    def __init__(self, enclave_id, national_vision_code="QNV-2030-SECURE"):
+        self.enclave_id = enclave_id
+        self.national_vision_code = national_vision_code
+        self.master_compliance_key = hashlib.sha256(national_vision_code.encode('utf-8')).digest()
+
+    def generate_secure_enclave_envelope(self, payload_dict):
+        # Serialize telemetry or HPC grid data to canonical JSON string
+        payload_string = json.dumps(payload_dict, sort_keys=True)
+        timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+        
+        # Construct secure header
+        header = {
+            "enclave_id": self.enclave_id,
+            "compliance_standard": self.national_vision_code,
+            "timestamp_utc": timestamp
+        }
+        header_string = json.dumps(header, sort_keys=True)
+        
+        # Compute HMAC/SHA-256 Signature across header and payload for end-to-end integrity
+        signing_payload = f"{header_string}.{payload_string}".encode('utf-8')
+        enclave_signature = hmac.new(self.master_compliance_key, signing_payload, hashlib.sha256).hexdigest()
+        
+        secure_envelope = {
+            "header": header,
+            "payload": payload_dict,
+            "enclave_hmac_signature": enclave_signature,
+            "compliance_status": "VERIFIED_SECURE"
+        }
+        return secure_envelope
+
+    def verify_enclave_envelope(self, secure_envelope):
+        header_string = json.dumps(secure_envelope["header"], sort_keys=True)
+        payload_string = json.dumps(secure_envelope["payload"], sort_keys=True)
+        
+        signing_payload = f"{header_string}.{payload_string}".encode('utf-8')
+        expected_signature = hmac.new(self.master_compliance_key, signing_payload, hashlib.sha256).hexdigest()
+        
+        is_authentic = hmac.compare_digest(expected_signature, secure_envelope["enclave_hmac_signature"])
+        return is_authentic
+
+if __name__ == "__main__":
+    # Initialize compliance enclave for National Vision HPC Infrastructure
+    enclave = NationalVisionComplianceEnclave(enclave_id="DOHA-QNV-ENCLAVE-01")
+    
+    sample_telemetry = {
+        "node_cluster": "Doha-London-Singapore",
+        "cardio_neural_sync_rate": 0.998,
+        "clock_drift_offset_us": 0.05
+    }
+    
+    envelope = enclave.generate_secure_enclave_envelope(sample_telemetry)
+    print("Generated Secure National Vision Enclave Envelope:")
+    print(json.dumps(envelope, indent=4))
+    
+    verified = enclave.verify_enclave_envelope(envelope)
+    print(f"\nEnd-to-End Compliance Signature Integrity Verification: {verified}")
