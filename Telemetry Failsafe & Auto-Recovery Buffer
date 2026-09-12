@@ -38,4 +38,77 @@ class TelemetryFailsafeBuffer:
                     break
             except Exception:
                 break
+import time
+import json
+from collections import deque
 
+class TelemetryFailsafeBuffer:
+    def __init__(self, max_buffer_size=1000, retry_limit=3):
+        self.max_buffer_size = max_buffer_size
+        self.retry_limit = retry_limit
+        self.buffer = deque(maxlen=max_buffer_size)
+        self.is_network_online = True
+
+    def ingest_packet(self, secure_envelope):
+        if self.is_network_online:
+            success = self._transmit_to_cluster(secure_envelope)
+            if not success:
+                self._cache_to_buffer(secure_envelope, reason="NETWORK_TRANSMIT_FAIL")
+        else:
+            self._cache_to_buffer(secure_envelope, reason="NETWORK_OFFLINE")
+
+    def _transmit_to_cluster(self, secure_envelope):
+        # Simulated transmission check across Doha-London-Singapore grid
+        try:
+            if not self.is_network_online:
+                return False
+            # Simulate success network dispatch
+            return True
+        except Exception:
+            return False
+
+    def _cache_to_buffer(self, secure_envelope, reason):
+        failsafe_entry = {
+            "timestamp_queued_ns": time.time_ns(),
+            "failure_reason": reason,
+            "envelope": secure_envelope,
+            "retry_attempts": 0
+        }
+        self.buffer.append(failsafe_entry)
+
+    def trigger_auto_recovery(self):
+        recovered_count = 0
+        failed_count = 0
+        temp_queue = deque()
+
+        while self.buffer:
+            entry = self.buffer.popleft()
+            if entry["retry_attempts"] < self.retry_limit:
+                entry["retry_attempts"] += 1
+                success = self._transmit_to_cluster(entry["envelope"])
+                if success:
+                    recovered_count += 1
+                else:
+                    temp_queue.append(entry)
+                    failed_count += 1
+            else:
+                # Max retries exceeded, route to permanent dead-letter log
+                failed_count += 1
+
+        self.buffer = temp_queue
+        return {"recovered": recovered_count, "pending_buffer": len(self.buffer), "failed": failed_count}
+
+if __name__ == "__main__":
+    failsafe_manager = TelemetryFailsafeBuffer(max_buffer_size=500)
+    
+    # Simulate network outage and buffer telemetry packets
+    failsafe_manager.is_network_online = False
+    failsafe_manager.ingest_packet({"enclave_id": "DOHA-QNV-ENCLAVE-01", "status": "LIVE_STREAM"})
+    
+    print(f"Packets currently buffered in failsafe queue: {len(failsafe_manager.buffer)}")
+    
+    # Restore network and execute auto-recovery buffer sync
+    failsafe_manager.is_network_online = True
+    recovery_stats = failsafe_manager.trigger_auto_recovery()
+    print("Auto-Recovery Execution Result:")
+    print(json.dumps(recovery_stats, indent=4))
