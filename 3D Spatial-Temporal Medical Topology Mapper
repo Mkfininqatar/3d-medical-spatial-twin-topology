@@ -32,4 +32,48 @@ class SpatialTopologyMapper:
         magnitude = (x**2 + y**2 + z**2) ** 0.5
         
         return {"x": round(x, 4), "y": round(y, 4), "z": round(z, 4), "magnitude": round(magnitude, 4)}
+import numpy as np
+import json
+import hashlib
+import hmac
+from datetime import datetime
 
+class MedicalSpatialTopologyEngine:
+    def __init__(self, node_id, secret_key):
+        self.node_id = node_id
+        self.secret_key = secret_key.encode('utf-8')
+
+    def aggregate_vector_stream(self, spatial_coordinates, vector_intensities):
+        # High-resolution vector aggregation for 3D medical spatial mapping
+        coords_array = np.array(spatial_coordinates)
+        intensities_array = np.array(vector_intensities)
+        
+        aggregated_vector = np.dot(coords_array.T, intensities_array) / np.sum(intensities_array)
+        magnitude = np.linalg.norm(aggregated_vector)
+        
+        payload = {
+            "spatial_centroid": aggregated_vector.tolist(),
+            "vector_magnitude": float(magnitude),
+            "node_origin": self.node_id,
+            "timestamp_ns": datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+        }
+        
+        # Secure HMAC enclave wrapping for compliance
+        payload_str = json.dumps(payload, sort_keys=True)
+        signature = hmac.new(self.secret_key, payload_str.encode('utf-8'), hashlib.sha256).hexdigest()
+        
+        return {
+            "spatial_envelope": payload,
+            "hmac_signature": signature
+        }
+
+if __name__ == "__main__":
+    topology_engine = MedicalSpatialTopologyEngine(node_id="DOHA-SPATIAL-01", secret_key="qnv_2030_spatial_key")
+    
+    # Sample 3D coordinates representing heart-to-brain neural axis mapping nodes
+    coordinates = [[0.0, 1.2, 3.4], [1.1, 2.0, 3.1], [0.5, 1.8, 2.9]]
+    intensities = [0.95, 0.98, 0.99]
+    
+    stream_result = topology_engine.aggregate_vector_stream(coordinates, intensities)
+    print("Generated 3D Medical Spatial Vector Stream:")
+    print(json.dumps(stream_result, indent=4))
