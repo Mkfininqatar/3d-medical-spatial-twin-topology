@@ -196,7 +196,7 @@ try:
 except Exception as e:
     st.error("❌ Failed to connect to the FastAPI Backend Server.")
     st.info("দয়া করে আরেকটি টার্মিনালে `uvicorn main:app --reload` কমান্ডটি চালু রাখুন।") 
- 30fdc9ad3172d6a6c0b3b488333e8894eef25a0e
+ 
 import logging
 from flask import Flask, jsonify, request
 # Importing the newly integrated high-performance engine
