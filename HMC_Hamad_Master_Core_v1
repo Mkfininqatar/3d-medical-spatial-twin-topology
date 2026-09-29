@@ -323,3 +323,57 @@ if __name__ == "__main__":
     test_result = range_engine.evaluate_pulse_range(live_pulse_reading=82)
     print(f"--- Module 6 Range Detection Metrics ---")
     print(test_result)
+"""
+=============================================================================
+System Name: HMC Cardio-Neural Spatial Twin Telemetry Engine
+Architect & Creator: Abdul Mazed Hossain
+Dedicated To: Hamad Medical Lab 
+              (In Memory of Father Amir Sheikh Hamad Bin Khalifa Al Thani)
+Module: 7. HMC_Nocturnal_Blindness_Monitor (Sleep-State Cognitive Blindness & Low-Energy Drop Detector)
+=============================================================================
+"""
+
+import time
+import logging
+
+class HMCNocturnalBlindnessMonitor:
+    def __init__(self):
+        self.architect = "Abdul Mazed Hossain"
+        self.dedication = "Hamad Medical Lab"
+        self.sleep_critical_threshold = 75
+
+    def monitor_sleep_state(self, is_user_sleeping, current_pulse, cognitive_awareness_level):
+        """
+        Monitors unconscious/sleep states where the user suffers from 'Cognitive Blindness' 
+        and cannot perceive dangerous pulse drops caused by low energy.
+        """
+        if is_user_sleeping and cognitive_awareness_level == "UNCONSCIOUS":
+            if current_pulse < self.sleep_critical_threshold:
+                return {
+                    "state": "NOCTURNAL_HAZARD_DETECTED",
+                    "pulse": current_pulse,
+                    "cognitive_blindness": "ACTIVE",
+                    "warning": "User is unaware of rapid energy drop during sleep.",
+                    "action": "TRIGGER_AUTOMATIC_SLEEP_BOOST"
+                }
+            else:
+                return {
+                    "state": "DEEP_SLEEP_STABLE",
+                    "pulse": current_pulse,
+                    "cognitive_blindness": "PASSIVE",
+                    "action": "CONTINUE_NOCTURAL_MONITORING"
+                }
+        else:
+            return {
+                "state": "CONSCIOUS_STATE",
+                "pulse": current_pulse,
+                "action": "STANDARD_TELEMETRY_ACTIVE"
+            }
+
+# Testing Module 7 Integration
+if __name__ == "__main__":
+    nocturnal_monitor = HMCNocturnalBlindnessMonitor()
+    # Simulating a dangerous low-energy pulse drop while the user is asleep and unaware
+    sleep_report = nocturnal_monitor.monitor_sleep_state(is_user_sleeping=True, current_pulse=72, cognitive_awareness_level="UNCONSCIOUS")
+    print(f"--- Module 7 Nocturnal Blindness Report ---")
+    print(sleep_report)
