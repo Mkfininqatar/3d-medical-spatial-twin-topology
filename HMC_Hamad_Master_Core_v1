@@ -266,3 +266,60 @@ if __name__ == "__main__":
     hazard_report = detector.analyze_cognitive_pressure(brain_illusion_index=8.2, environmental_pressure_spike=1.2, current_pulse=80)
     print(f"--- Module 5 Illusion & Deactivation Report ---")
     print(hazard_report)
+"""
+=============================================================================
+System Name: HMC Cardio-Neural Spatial Twin Telemetry Engine
+Architect & Creator: Abdul Mazed Hossain
+Dedicated To: Hamad Medical Lab 
+              (In Memory of Father Amir Sheikh Hamad Bin Khalifa Al Thani)
+Module: 6. HMC_Range_Detection_Engine (Micro-Second Range Control: 76-86 vs 88-96)
+=============================================================================
+"""
+
+import time
+
+class HMCRangeDetectionEngine:
+    def __init__(self):
+        self.architect = "Abdul Mazed Hossain"
+        self.dedication = "Hamad Medical Lab"
+        self.block_range = (76, 86)
+        self.unlock_range = (88, 96)
+
+    def evaluate_pulse_range(self, live_pulse_reading):
+        """
+        Executes micro-second clocking to check if live pulse falls into 
+        the Danger/Block Zone (76-86) or the Safe/Unlock Zone (88-96).
+        """
+        start_ns = time.time_ns()
+        
+        zone_status = "UNKNOWN"
+        action_required = "NONE"
+        
+        # Range evaluation logic
+        if self.block_range[0] <= live_pulse_reading <= self.block_range[1]:
+            zone_status = "BLOCK_ZONE_DANGER"
+            action_required = "TRIGGER_IMMEDIATE_BALANCING"
+        elif self.unlock_range[0] <= live_pulse_reading <= self.unlock_range[1]:
+            zone_status = "UNLOCK_ZONE_SAFE"
+            action_required = "MAINTAIN_CURRENT_FLOW"
+        else:
+            zone_status = "OPTIMIZATION_REQUIRED"
+            action_required = "ADJUST_TIME_PROCESSING"
+            
+        end_ns = time.time_ns()
+        clocking_latency_us = (end_ns - start_ns) / 1000.0
+        
+        return {
+            "pulse": live_pulse_reading,
+            "zone": zone_status,
+            "action": action_required,
+            "clocking_latency_us": round(clocking_latency_us, 4)
+        }
+
+# Testing Module 6 Integration
+if __name__ == "__main__":
+    range_engine = HMCRangeDetectionEngine()
+    # Testing a pulse value falling right into the block zone
+    test_result = range_engine.evaluate_pulse_range(live_pulse_reading=82)
+    print(f"--- Module 6 Range Detection Metrics ---")
+    print(test_result)
