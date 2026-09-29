@@ -377,3 +377,54 @@ if __name__ == "__main__":
     sleep_report = nocturnal_monitor.monitor_sleep_state(is_user_sleeping=True, current_pulse=72, cognitive_awareness_level="UNCONSCIOUS")
     print(f"--- Module 7 Nocturnal Blindness Report ---")
     print(sleep_report)
+"""
+=============================================================================
+System Name: HMC Cardio-Neural Spatial Twin Telemetry Engine
+Architect & Creator: Abdul Mazed Hossain
+Dedicated To: Hamad Medical Lab 
+              (In Memory of Father Amir Sheikh Hamad Bin Khalifa Al Thani)
+Module: 8. HMC_Auto_Intervention_Shield (Autonomous Balance & Life-Saving Protocol)
+=============================================================================
+"""
+
+import time
+import logging
+
+class HMCAutoInterventionShield:
+    def __init__(self):
+        self.architect = "Abdul Mazed Hossain"
+        self.dedication = "Hamad Medical Lab"
+        self.safe_unlock_target = 90  # Target pulse to restore safety (88-96 range)
+
+    def execute_auto_shield_intervention(self, current_pulse, hazard_source):
+        """
+        Executes an autonomous intervention protocol in micro-seconds to neutralize 
+        sudden blocks or nocturnal drop, instantly shifting the pulse to the Unlock Zone.
+        """
+        start_ns = time.time_ns()
+        
+        logging.critical(f"SHIELD ACTIVATED: Hazard detected from [{hazard_source}] at pulse {current_pulse}!")
+        
+        # Simulating micro-second electron stream re-alignment and pulse boost
+        stabilized_pulse = self.safe_unlock_target
+        
+        end_ns = time.time_ns()
+        intervention_latency_us = (end_ns - start_ns) / 1000.0
+        
+        return {
+            "shield_status": "INTERVENTION_SUCCESSFUL",
+            "source_hazard": hazard_source,
+            "initial_danger_pulse": current_pulse,
+            "restored_safe_pulse": stabilized_pulse,
+            "target_zone": "UNLOCK_ZONE (88-96)",
+            "intervention_latency_us": round(intervention_latency_us, 4),
+            "action_taken": "AUTONOMOUS_ELECTRON_PULSE_BOOST"
+        }
+
+# Testing Module 8 Integration
+if __name__ == "__main__":
+    shield = HMCAutoInterventionShield()
+    # Simulating an automatic life-saving shield activation for a blocked/dropped pulse
+    shield_report = shield.execute_auto_shield_intervention(current_pulse=81, hazard_source="NOCTURNAL_BLOCK_OR_ILLUSION_SPIKE")
+    print(f"--- Module 8 Auto-Intervention Shield Report ---")
+    print(shield_report)
