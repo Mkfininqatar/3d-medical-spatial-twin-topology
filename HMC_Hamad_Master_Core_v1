@@ -214,3 +214,55 @@ if __name__ == "__main__":
     refresh_result = sleep_engine.execute_deep_sleep_refresh(current_pulse=74, target_organ_region="MYOCARDIAL_WALL")
     print(f"--- Module 4 Deep Sleep Protocol Results ---")
     print(refresh_result)
+"""
+=============================================================================
+System Name: HMC Cardio-Neural Spatial Twin Telemetry Engine
+Architect & Creator: Abdul Mazed Hossain
+Dedicated To: Hamad Medical Lab 
+              (In Memory of Father Amir Sheikh Hamad Bin Khalifa Al Thani)
+Module: 5. HMC_Illusion_Deactivation_Detector (Illusion-to-Reality & Over-Pulse Block Trap)
+=============================================================================
+"""
+
+import logging
+
+class HMCIllusionDeactivationDetector:
+    def __init__(self):
+        self.architect = "Abdul Mazed Hossain"
+        self.dedication = "Hamad Medical Lab"
+        self.threshold_block_min = 76
+        self.threshold_block_max = 86
+
+    def analyze_cognitive_pressure(self, brain_illusion_index, environmental_pressure_spike, current_pulse):
+        """
+        Detects how abstract/illusionary images and environmental pressure 
+        drive the electron signal into a sudden over-pulse block or deactive mode.
+        """
+        # Calculating the combined stress load on the main engine
+        total_cognitive_load = brain_illusion_index * environmental_pressure_spike
+        
+        # Check if pulse is entering the Danger/Block Zone (76-86) due to over-pressure
+        if self.threshold_block_min <= current_pulse <= self.threshold_block_max or total_cognitive_load > 8.5:
+            return {
+                "alert_level": "CRITICAL_HAZARD",
+                "pulse": current_pulse,
+                "cognitive_load": round(total_cognitive_load, 2),
+                "system_state": "DEACTIVE_SIGNAL_MODE_WARNING",
+                "action": "PREVENT_SUDDEN_CARDIAC_BLOCK"
+            }
+        else:
+            return {
+                "alert_level": "STABLE",
+                "pulse": current_pulse,
+                "cognitive_load": round(total_cognitive_load, 2),
+                "system_state": "NORMAL_FLOW",
+                "action": "MONITORING_ACTIVE"
+            }
+
+# Testing Module 5 Integration
+if __name__ == "__main__":
+    detector = HMCIllusionDeactivationDetector()
+    # Simulating high brain illusion index and environmental pressure spike leading to pulse drop/block
+    hazard_report = detector.analyze_cognitive_pressure(brain_illusion_index=8.2, environmental_pressure_spike=1.2, current_pulse=80)
+    print(f"--- Module 5 Illusion & Deactivation Report ---")
+    print(hazard_report)
