@@ -107,3 +107,57 @@ if __name__ == "__main__":
     metrics = time_engine.convert_time_to_telemetry_signal(dummy_stream)
     print(f"--- Module 2 Time Processing Metrics ---")
     print(metrics)
+"""
+=============================================================================
+System Name: HMC Cardio-Neural Spatial Twin Telemetry Engine
+Architect & Creator: Abdul Mazed Hossain
+Dedicated To: Hamad Medical Lab 
+              (In Memory of Father Amir Sheikh Hamad Bin Khalifa Al Thani)
+Module: 3. HMC_Electron_Signal_Processor (High-Light Data Packet & Spatial Twin Flow)
+=============================================================================
+"""
+
+import time
+
+class HMCElectronSignalProcessor:
+    def __init__(self):
+        self.architect = "Abdul Mazed Hossain"
+        self.dedication = "Hamad Medical Lab"
+        self.carrier_type = "ELECTRON_HIGH_LIGHT_PACKET"
+
+    def process_electron_packets(self, raw_sensor_voltages):
+        """
+        Translates raw electron activities from brain and heart into structured 
+        'High-Light Data Packets' to sustain the Cardio-Neural Spatial Twin flow.
+        """
+        packet_registry = []
+        
+        for index, voltage in enumerate(raw_sensor_voltages):
+            # Filtering and converting raw electron flow into high-precision packets
+            packet_id = f"HMC-PKT-{index + 1:04d}"
+            timestamp_us = time.time_ns() / 1000.0
+            
+            # Encapsulating into High-Light Data Packet structure
+            highlight_packet = {
+                "packet_id": packet_id,
+                "timestamp_us": round(timestamp_us, 2),
+                "carrier": self.carrier_type,
+                "electron_intensity": round(voltage * 100.0, 4),
+                "spatial_twin_state": "SYNCHRONIZED"
+            }
+            packet_registry.append(highlight_packet)
+            
+        return {
+            "total_packets_processed": len(packet_registry),
+            "stream_status": "REAL_TIME_FLOW_ACTIVE",
+            "packets": packet_registry
+        }
+
+# Testing Module 3 Integration
+if __name__ == "__main__":
+    electron_processor = HMCElectronSignalProcessor()
+    # Simulated raw electron voltage readings from cardio-neural pathways
+    simulated_voltages = [0.89, 0.92, 0.85, 0.94]
+    stream_output = electron_processor.process_electron_packets(simulated_voltages)
+    print(f"--- Module 3 Electron High-Light Packet Metrics ---")
+    print(f"Total Packets: {stream_output['total_packets_processed']} | Status: {stream_output['stream_status']}")
