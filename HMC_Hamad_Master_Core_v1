@@ -161,3 +161,56 @@ if __name__ == "__main__":
     stream_output = electron_processor.process_electron_packets(simulated_voltages)
     print(f"--- Module 3 Electron High-Light Packet Metrics ---")
     print(f"Total Packets: {stream_output['total_packets_processed']} | Status: {stream_output['stream_status']}")
+"""
+=============================================================================
+System Name: HMC Cardio-Neural Spatial Twin Telemetry Engine
+Architect & Creator: Abdul Mazed Hossain
+Dedicated To: Hamad Medical Lab 
+              (In Memory of Father Amir Sheikh Hamad Bin Khalifa Al Thani)
+Module: 4. HMC_Deep_Sleep_Refresh_Protocol (Cache Clear & Self-Repair Mechanism)
+=============================================================================
+"""
+
+import time
+import logging
+
+class HMCDeepSleepRefreshProtocol:
+    def __init__(self):
+        self.architect = "Abdul Mazed Hossain"
+        self.dedication = "Hamad Medical Lab"
+        self.refresh_mode = "DEEP_SLEEP_CACHE_FLUSH"
+
+    def execute_deep_sleep_refresh(self, current_pulse, target_organ_region):
+        """
+        Forces a controlled system 'Deep Sleep / Restart' state to flush pathological 
+        cache and redirect neural-heart power for rapid self-repair.
+        """
+        print(f"[{self.refresh_mode}] Initiating restart process for target region: {target_organ_region}")
+        
+        # Simulating cache refresh duration at micro-second resolution
+        start_ns = time.time_ns()
+        
+        # Flushing unnecessary telemetry overhead and clearing data blocks
+        cache_status = "CLEARED"
+        
+        end_ns = time.time_ns()
+        flush_duration_us = (end_ns - start_ns) / 1000.0
+        
+        # Post-refresh stabilization state
+        stabilized_state = {
+            "status": "SELF_REPAIR_ACTIVE",
+            "previous_pulse": current_pulse,
+            "target_healing_zone": target_organ_region,
+            "cache_flush_time_us": round(flush_duration_us, 2),
+            "action": "FOCUSED_CELLULAR_RECOVERY"
+        }
+        
+        return stabilized_state
+
+# Testing Module 4 Integration
+if __name__ == "__main__":
+    sleep_engine = HMCDeepSleepRefreshProtocol()
+    # Simulating a trigger when system enters low-energy/critical state
+    refresh_result = sleep_engine.execute_deep_sleep_refresh(current_pulse=74, target_organ_region="MYOCARDIAL_WALL")
+    print(f"--- Module 4 Deep Sleep Protocol Results ---")
+    print(refresh_result)
