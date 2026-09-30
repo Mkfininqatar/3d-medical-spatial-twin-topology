@@ -164,3 +164,81 @@ if __name__ == "__main__":
     predictive_engine = SirHamadPredictiveTelemetryEngine()
     risks = predictive_engine.predict_hardware_bottlenecks()
     print("Predicted Bottlenecks / Failures:", risks)
+import time
+import asyncio
+import random
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.responses import HTMLResponse
+
+app = FastAPI(title="Sir Hamad's Real-Time HPC & Telemetry Dashboard")
+
+# HTML template for real-time WebSocket visualization
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sir Hamad's Telemetry Dashboard</title>
+        <style>
+            body { font-family: Arial, sans-serif; background: #0e1117; color: #c9d1d9; text-align: center; padding-top: 50px; }
+            .card { background: #161b22; padding: 20px; margin: 20px auto; width: 50%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+            h2 { color: #58a6ff; }
+            #metric-val { font-size: 48px; font-weight: bold; color: #3fb950; }
+        </style>
+    </head>
+    <body>
+        <h2>Sir Hamad's Cardio-Neural HPC Live Telemetry</h2>
+        <div class="card">
+            <p>Real-Time Metric Value:</p>
+            <div id="metric-val">--</div>
+            <p id="status-text">Connecting...</p>
+        </div>
+        <script>
+            const ws = new WebSocket("ws://localhost:8000/ws/telemetry");
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                document.getElementById("metric-val").innerText = data.metric_value;
+                document.getElementById("status-text").innerText = "Status: " + data.status + " | Latency: " + data.latency_ns + " ns";
+            };
+        </script>
+    </body>
+</html>
+"""
+
+@app.get("/")
+async def get():
+    return HTMLResponse(HTML_TEMPLATE)
+
+def sir_hamad_precision_clock():
+    """High-precision nanosecond clocking inspired by Sir Hamad's legacy architecture."""
+    return time.perf_counter_ns()
+
+@app.websocket("/ws/telemetry")
+async def websocket_telemetry_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            start_time = sir_hamad_precision_clock()
+            
+            # Generating dynamic metric simulation (Safe & Block zones)
+            current_metric = random.randint(75, 96)
+            
+            if 88 <= current_metric <= 96:
+                status = "STABLE (Safe Zone)"
+            elif 76 <= current_metric <= 86:
+                status = "WARNING (Block Zone)"
+            else:
+                status = "CRITICAL"
+
+            end_time = sir_hamad_precision_clock()
+            latency_ns = end_time - start_time
+
+            payload = {
+                "metric_value": current_metric,
+                "status": status,
+                "latency_ns": latency_ns
+            }
+
+            await websocket.send_json(payload)
+            await asyncio.sleep(1) # Send live telemetry update every 1 second
+    except WebSocketDisconnect:
+        print("Client disconnected from telemetry stream.")
