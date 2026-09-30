@@ -1369,3 +1369,122 @@ if stream_active:
         time.sleep(0.05)
 else:
     st.info("💡 Turn on 'Start Live Stream' in the left control panel to begin streaming high-frequency data.")
+import time
+import asyncio
+import random
+import logging
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.responses import HTMLResponse
+
+# Configure logging for Sir Hamad's Full-Stack Telemetry & Circle Engine
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+app = FastAPI(title="Sir Hamad's Cardio-Neural Behavior Changing Circle Dashboard")
+
+class SirHamadBehaviorChangingCircle:
+    def __init__(self):
+        self.safe_zone_min = 88
+        self.safe_zone_max = 96
+        self.block_zone_min = 76
+        self.block_zone_max = 86
+        self.current_circle_state = "STABLE_OPTIMAL"
+
+    def sir_hamad_precision_clock(self):
+        """High-precision nanosecond clocking inspired by Sir Hamad's legacy architecture."""
+        return time.perf_counter_ns()
+
+    def evaluate_behavior_shift(self, current_metric_value):
+        start_time = self.sir_hamad_precision_clock()
+        previous_state = self.current_circle_state
+
+        if self.safe_zone_min <= current_metric_value <= self.safe_zone_max:
+            self.current_circle_state = "STABLE_OPTIMAL"
+        elif self.block_zone_min <= current_metric_value <= self.block_zone_max:
+            self.current_circle_state = "WARNING_TRANSITION_ZONE"
+        else:
+            self.current_circle_state = "CRITICAL_BREAKOUT"
+
+        shift_detected = (previous_state != self.current_circle_state)
+        
+        end_time = self.sir_hamad_precision_clock()
+        latency_ns = end_time - start_time
+
+        return {
+            "metric_value": current_metric_value,
+            "state": self.current_circle_state,
+            "shift_detected": shift_detected,
+            "latency_ns": latency_ns
+        }
+
+engine = SirHamadBehaviorChangingCircle()
+
+# Front-End HTML Dashboard with Dynamic Circle Visualization
+HTML_DASHBOARD = """
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sir Hamad's Behavior Changing Circle Dashboard</title>
+        <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0b0f19; color: #e6edf3; text-align: center; padding: 40px; }
+            h2 { color: #58a6ff; margin-bottom: 5px; }
+            p.subtitle { color: #8b949e; margin-top: 0; }
+            .dashboard-container { display: flex; justify-content: center; gap: 30px; margin-top: 40px; flex-wrap: wrap; }
+            .card { background: #161b22; border: 1px solid #30363d; padding: 25px; border-radius: 12px; width: 320px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); }
+            .circle-box { width: 140px; height: 140px; border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; transition: all 0.4s ease; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+            .STABLE_OPTIMAL { background: #238636; color: #ffffff; box-shadow: 0 0 25px #2ea043; }
+            .WARNING_TRANSITION_ZONE { background: #9e6a03; color: #ffffff; box-shadow: 0 0 25px #bb8009; }
+            .CRITICAL_BREAKOUT { background: #da3633; color: #ffffff; box-shadow: 0 0 25px #f85149; }
+            .metric-val { font-size: 36px; font-weight: bold; margin: 10px 0; }
+            .meta-info { font-size: 13px; color: #8b949e; margin-top: 10px; }
+        </style>
+    </head>
+    <body>
+        <h2>Sir Hamad's Cardio-Neural Spatial Twin</h2>
+        <p class="subtitle">Behavior Changing Circle & Live Telemetry Engine</p>
+        
+        <div class="dashboard-container">
+            <div class="card">
+                <h3>Behavioral State Circle</h3>
+                <div id="circle-element" class="circle-box STABLE_OPTIMAL">STABLE</div>
+                <div class="metric-val" id="metric-display">--</div>
+                <div class="meta-info" id="status-display">Status: Connecting...</div>
+                <div class="meta-info" id="latency-display">Latency: -- ns</div>
+            </div>
+        </div>
+
+        <script>
+            const ws = new WebSocket("ws://" + window.location.host + "/ws/behavior-circle");
+            
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                
+                document.getElementById("metric-display").innerText = data.metric_value;
+                document.getElementById("status-display").innerText = "State: " + data.state;
+                document.getElementById("latency-display").innerText = "Clock Latency: " + data.latency_ns + " ns";
+                
+                const circleEl = document.getElementById("circle-element");
+                circleEl.className = "circle-box " + data.state;
+                circleEl.innerText = data.state.split('_')[0];
+            };
+        </script>
+    </body>
+</html>
+"""
+
+@app.get("/")
+async def get_dashboard():
+    return HTMLResponse(HTML_DASHBOARD)
+
+@app.websocket("/ws/behavior-circle")
+async def websocket_behavior_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            # Simulating dynamic metrics spanning across safe, warning, and critical ranges
+            simulated_metric = random.randint(72, 96)
+            result = engine.evaluate_behavior_shift(simulated_metric)
+            
+            await websocket.send_json(result)
+            await asyncio.sleep(1) # Live stream updates every 1 second
+    except WebSocketDisconnect:
+        logging.info("Front-end client disconnected from Behavior Circle stream.")
