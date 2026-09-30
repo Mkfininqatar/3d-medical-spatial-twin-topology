@@ -418,3 +418,50 @@ if __name__ == "__main__":
     test_metrics = [92, 84, 74, 90]
     for metric in test_metrics:
         circle_engine.evaluate_behavior_shift(metric)
+import time
+import random
+from dataclasses import dataclass
+
+@dataclass
+class MindFrequencyState:
+    uncontrolled_mind_index: float  # মনের অবহেলা বা অনিয়ন্ত্রিত অবস্থার মাত্রা (0 থেকে 100)
+    external_chaotic_frequency: float  # চারপাশের বিশৃঙ্খল বাহ্যিক ফ্রিকোয়েন্সি (Hz)
+    raw_nervous_system_impact: float   # নার্ভাস সিস্টেমে সরাসরি আঘাতের পরিমাণ
+
+class MindFrequencyTelemetryEngine:
+    def __init__(self, node_id: str = "Mkfininqatar-Mind-Core"):
+        self.node_id = node_id
+        self.baseline_inner_peace = 100.0  # ভেতরের আদি সুষম অবস্থা বা শান্তি
+        print(f"[*] Initializing {self.node_id} - Mind & External Frequency Telemetry Active...")
+
+    def capture_subconscious_reaction(self) -> MindFrequencyState:
+        """ অবচেতন প্রতিক্রিয়া এবং বাহ্যিক ফ্রিকোয়েন্সির ডেটাসেট ক্যাপচার করে """
+        mind_neglect = random.uniform(40.0, 90.0)    # মনকে অবহেলা করার মাত্রা
+        ext_freq = random.uniform(30.0, 85.0)        # বিশৃঙ্খল বাহ্যিক তরঙ্গের তীব্রতা
+        
+        # অনিয়ন্ত্রিত মন যখন ফিল্টার ছাড়া সরাসরি ফ্রিকোয়েন্সি গ্রহণ করে
+        nerve_impact = (mind_neglect * 0.5) + (ext_freq * 0.5)
+        
+        return MindFrequencyState(
+            uncontrolled_mind_index=mind_neglect,
+            external_chaotic_frequency=ext_freq,
+            raw_nervous_system_impact=nerve_impact
+        )
+
+    def process_telemetry_stream(self, cycles: int = 3):
+        print(f"\n--- Monitoring Heart-Mind Axis & External Impact [Node: {self.node_id}] ---")
+        for step in range(1, cycles + 1):
+            time.sleep(1)
+            state = self.capture_subconscious_reaction()
+            
+            # সুষম অবস্থা ভেঙে পড়ার হিসাব
+            disrupted_peace = max(0.0, self.baseline_inner_peace - state.raw_nervous_system_impact)
+            
+            print(f"[Cycle {step}] Mind Neglect: {state.uncontrolled_mind_index:.1f}% | "
+                  f"Ext Freq: {state.external_chaotic_frequency:.1f}Hz --> "
+                  f"Nerve Impact: {state.raw_nervous_system_impact:.1f} | "
+                  f"Inner Peace Level: {disrupted_peace:.1f}% [STATUS: DISRUPTED / UNFILTERED]")
+
+if __name__ == "__main__":
+    engine = MindFrequencyTelemetryEngine()
+    engine.process_telemetry_stream()
