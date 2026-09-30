@@ -789,3 +789,50 @@ class SafeHavenTelemetryEngine:
 if __name__ == "__main__":
     engine = SafeHavenTelemetryEngine()
     engine.execute_shield_upgrade()
+import time
+import random
+from dataclasses import dataclass
+
+@dataclass
+class SoulIsolationState:
+    toxic_concrete_frequency: float  # কংক্রিট জঙ্গল ও ইঁদুর দৌড়ের অদৃশ্য বিষাক্ত তরঙ্গ
+    soul_deprived_void: float        # কোষে কোষে তৈরি হওয়া 'ডিপ্রাইভড ফ্রিকোয়েন্সি' বা শূন্যতা
+    medical_prescription_effect: float # ল্যাব বা প্রেসক্রিপশনের অকার্যকর সাময়িক প্রভাব
+    isolation_system_status: str     # সিস্টেমের বর্তমান অবস্থা
+
+class SoulIsolationTelemetryEngine:
+    def __init__(self, node_id: str = "Mkfininqatar-SoulIsolationCore"):
+        self.node_id = node_id
+        print(f"[*] Initializing {self.node_id} - Toxic Frequencies & Soul Isolation Telemetry Active...")
+
+    def evaluate_isolation_state(self) -> SoulIsolationState:
+        toxic_freq = random.uniform(50.0, 90.0)
+        void_level = toxic_freq * 0.95
+        pill_effect = random.uniform(5.0, 15.0) # প্রেসক্রিপশন এই আত্মিক শূন্যতাকে স্পর্শ করতে পারে না
+        
+        if void_level > 60.0:
+            status = "SOUL ISOLATION ACTIVE / UNTOUCHABLE BY PHARMA PILLS"
+        else:
+            status = "GROUNDED IN NATURAL BASELINE"
+            
+        return SoulIsolationState(
+            toxic_concrete_frequency=toxic_freq,
+            soul_deprived_void=void_level,
+            medical_prescription_effect=pill_effect,
+            isolation_system_status=status
+        )
+
+    def execute_isolation_upgrade(self, cycles: int = 3):
+        print(f"\n--- Monitoring Toxic Frequencies & Soul Isolation [Node: {self.node_id}] ---")
+        for step in range(1, cycles + 1):
+            time.sleep(1)
+            state = self.evaluate_isolation_state()
+            
+            print(f"[Cycle {step}] Toxic Environment Wave: {state.toxic_concrete_frequency:.1f}% | "
+                  f"Soul Deprived Void: {state.soul_deprived_void:.1f}% | "
+                  f"Pharma Patch Impact: {state.medical_prescription_effect:.1f}% --> "
+                  f"STATUS: [{state.isolation_system_status}]")
+
+if __name__ == "__main__":
+    engine = SoulIsolationTelemetryEngine()
+    engine.execute_isolation_upgrade()
