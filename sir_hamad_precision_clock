@@ -314,3 +314,57 @@ if __name__ == "__main__":
     
     print("\nFinal Cryptographic Ledger Chain:")
     print(json.dumps(ledger.chain, indent=4))
+import time
+import redis
+import logging
+
+# Configure logger for Sir Hamad's Global Message Broker Engine
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+class SirHamadEnterpriseMessageBroker:
+    def __init__(self, host='localhost', port=6379, stream_name="sir_hamad_telemetry_stream"):
+        self.stream_name = stream_name
+        try:
+            # Connecting to Redis Enterprise Broker
+            self.redis_client = redis.Redis(host=host, port=port, decode_responses=True)
+            self.redis_client.ping()
+            logging.info("Successfully connected to Redis Enterprise Message Broker.")
+        except redis.ConnectionError:
+            logging.warning("Redis server not detected. Operating in simulation/fallback mode.")
+            self.redis_client = None
+
+    def sir_hamad_precision_clock(self):
+        """High-precision nanosecond clocking inspired by Sir Hamad's legacy architecture."""
+        return time.perf_counter_ns()
+
+    def publish_telemetry_event(self, metric_value, status):
+        """Publishes a real-time telemetry event to the Redis Stream for global scalability."""
+        start_time = self.sir_hamad_precision_clock()
+        timestamp = self.sir_hamad_precision_clock()
+
+        event_payload = {
+            "timestamp": str(timestamp),
+            "metric_value": str(metric_value),
+            "status": status
+        }
+
+        if self.redis_client:
+            # Add message to Redis Stream
+            message_id = self.redis_client.xadd(self.stream_name, event_payload)
+            end_time = self.sir_hamad_precision_clock()
+            latency_ns = end_time - start_time
+            logging.info(f"Stream Published | ID: {message_id} | Latency: {latency_ns} ns")
+            return message_id
+        else:
+            end_time = self.sir_hamad_precision_clock()
+            latency_ns = end_time - start_time
+            logging.info(f"Simulated Publish (No Redis) | Payload: {event_payload} | Latency: {latency_ns} ns")
+            return "simulated_id"
+
+# Example execution loop for Enterprise Message Broker Integration
+if __name__ == "__main__":
+    broker_engine = SirHamadEnterpriseMessageBroker()
+    
+    # Publishing global scale telemetry events
+    broker_engine.publish_telemetry_event(94, "STABLE (Safe Zone)")
+    broker_engine.publish_telemetry_event(81, "WARNING (Block Zone)")
