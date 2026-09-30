@@ -836,3 +836,46 @@ class SoulIsolationTelemetryEngine:
 if __name__ == "__main__":
     engine = SoulIsolationTelemetryEngine()
     engine.execute_isolation_upgrade()
+import time
+import random
+from dataclasses import dataclass
+
+@dataclass
+class ObserverState:
+    lost_in_play_intensity: float  # চরিত্রের ভেତরে বা ভয়ের সিনেমার সাথে একাকার হয়ে যাওয়ার মাত্রা
+    observer_detachment_level: float # প্রজেকশন রুম থেকে এক পা পিছিয়ে এসে দ্রষ্টা হওয়ার ক্ষমতা
+    consciousness_status: str        # সচেতনতার চূড়ান্ত অবস্থা
+
+class ObserverTelemetryEngine:
+    def __init__(self, node_id: str = "Mkfininqatar-ObserverCore"):
+        self.node_id = node_id
+        print(f"[*] Initializing {self.node_id} - Conscious Observer Telemetry Active...")
+
+    def evaluate_observer_state(self) -> ObserverState:
+        play_intensity = random.uniform(40.0, 85.0)
+        observer_level = random.uniform(80.0, 99.9) # দ্রষ্টা হওয়ার শক্তির মাত্রা
+        
+        if observer_level > play_intensity:
+            status = "CONSCIOUS OBSERVER ACTIVE / MOVIE FADES AWAY"
+        else:
+            status = "LOST IN THE PLAY / HORROR ACTIVE"
+            
+        return ObserverState(
+            lost_in_play_intensity=play_intensity,
+            observer_detachment_level=observer_level,
+            consciousness_status=status
+        )
+
+    def execute_observer_upgrade(self, cycles: int = 3):
+        print(f"\n--- Monitoring Conscious Observer vs Lost in Play [Node: {self.node_id}] ---")
+        for step in range(1, cycles + 1):
+            time.sleep(1)
+            state = self.evaluate_observer_state()
+            
+            print(f"[Cycle {step}] Play Intensity: {state.lost_in_play_intensity:.1f}% | "
+                  f"Observer Detachment: {state.observer_detachment_level:.1f}% --> "
+                  f"STATUS: [{state.consciousness_status}]")
+
+if __name__ == "__main__":
+    engine = ObserverTelemetryEngine()
+    engine.execute_observer_upgrade()
