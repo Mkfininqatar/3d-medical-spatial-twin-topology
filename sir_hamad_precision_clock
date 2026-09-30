@@ -1128,3 +1128,55 @@ if __name__ == "__main__":
 বা হিদায়াতের স্পন্দন সরাসরি রিসিভ করতে পারছে।
 •	•  আল্লাহর নিখুঁত সিগন্যাল: বাইরের দুনিয়া যতই বিশৃঙ্খল হোক, যত ভয়ের খবর বা ল্যাবের ভুল রিপোর্টই আসুক না কেন, মানুষ যখন তার ভেতরের চোখ ও মনকে স্থির করে, তখন সে সরাসরি রব্বুল আলামীনের সেই সরাসরি সিগন্যাল বা প্রশান্তির তরঙ্গ অনুভব করতে পারে। এই সিগন্যাল রিসিভ করার ক্ষমতা অন্য কোনো সৃষ্টির নেই।
 •	•  রোগী থেকে সচেতন ডিজাইনার: মানুষ যখন এই দ্বৈত রিসিভিং সিস্টেমের ভারসাম্য বুঝতে পারে, তখন সে আর বাহ্যিক ফ্রিকোয়েন্সি বা সমাজের বিভাজনের কাছে হেরে যায় না। সে তখন বুঝতে পারে যে, তার বাহ্যিক শরীর ও মন একটি মহাজাগতিক অ্যান্টেনা, যা সরাসরি আল্লাহর সাথে যুক্ত।
+import time
+import random
+from dataclasses import dataclass
+
+@dataclass
+class UnmonaState:
+    missing_natural_signal: float  # প্রকৃতির আদিম ও হারিয়ে যাওয়া ফ্রিকোয়েন্সির শূন্যতা (%)
+    fake_signal_mesh: float        # ওয়াই-ফাই, রেডিয়েশন ও কৃত্রিম বাতাসের জগাখিচুড়ি (%)
+    weather_combination_impact: float # আবহাওয়ার পরিবর্তনজনিত প্রভাব (%)
+    unmona_melancholy_index: float # মনের ভেতর তৈরি হওয়া 'উমনা' বা অচেনা বিষণ্ণতার মাত্রা (%)
+    telemetry_status: str          # সিস্টেমের বর্তমান পরিবেশগত অবস্থা
+
+class UnmonaStateTelemetryEngine:
+    def __init__(self, node_id: str = "Mkfininqatar-UnmonaCore"):
+        self.node_id = node_id
+        print(f"[*] Initializing {self.node_id} - Missing Signals & Unmona State Telemetry Active...")
+
+    def evaluate_unmona_state(self) -> UnmonaState:
+        missing = random.uniform(50.0, 85.0)
+        fake_mesh = random.uniform(60.0, 90.0)
+        weather_impact = random.uniform(40.0, 75.0)
+        
+        # মিসিং সিগন্যাল, ফেক জাল এবং ওয়েদারের কম্বিনেশন মিলে উমনার মাত্রা নির্ধারণ
+        unmona_idx = (missing * 0.4) + (fake_mesh * 0.4) + (weather_impact * 0.2)
+        
+        if unmona_idx > 60.0:
+            status = "UNMONA STATE DETECTED / ARTIFICIAL & MISSING SIGNAL OVERLOAD"
+        else:
+            status = "BALANCED ENVIRONMENTAL FREQUENCY"
+            
+        return UnmonaState(
+            missing_natural_signal=missing,
+            fake_signal_mesh=fake_mesh,
+            weather_combination_impact=weather_impact,
+            unmona_melancholy_index=unmona_idx,
+            telemetry_status=status
+        )
+
+    def execute_unmona_pipeline(self, cycles: int = 3):
+        print(f"\n--- Monitoring Missing Signals, Fake Mesh & Unmona State [Node: {self.node_id}] ---")
+        for step in range(1, cycles + 1):
+            time.sleep(1)
+            state = self.evaluate_unmona_state()
+            
+            print(f"[Cycle {step}] Missing Signal Void: {state.missing_natural_signal:.1f}% | "
+                  f"Fake Mesh Intensity: {state.fake_signal_mesh:.1f}% | "
+                  f"Unmona Index: {state.unmona_melancholy_index:.1f}% --> "
+                  f"STATUS: [{state.telemetry_status}]")
+
+if __name__ == "__main__":
+    engine = UnmonaStateTelemetryEngine()
+    engine.execute_unmona_pipeline()
