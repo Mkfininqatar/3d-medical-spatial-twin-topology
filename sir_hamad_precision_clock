@@ -465,3 +465,66 @@ class MindFrequencyTelemetryEngine:
 if __name__ == "__main__":
     engine = MindFrequencyTelemetryEngine()
     engine.process_telemetry_stream()
+import time
+import random
+from dataclasses import dataclass
+
+@dataclass
+class MindFrequencyState:
+    uncontrolled_mind_index: float  # মনের অবহেলা বা অনিয়ন্ত্রিত অবস্থার মাত্রা
+    external_chaotic_frequency: float  # চারপাশের বিশৃঙ্খল বাহ্যিক ফ্রিকোয়েন্সি (Hz)
+    raw_nervous_system_impact: float   # নার্ভাস সিস্টেমে সরাসরি আঘাত
+
+@dataclass
+class HeartAxisTelemetry:
+    heart_pulse_variance: float      # হৃদপিণ্ডের অনিয়ন্ত্রিত স্পন্দন বা পালস পরিবর্তন
+    biological_clock_status: str     # বায়োলজিক্যাল ক্লকের বর্তমান অবস্থা
+
+class HeartMindTelemetryEngine:
+    def __init__(self, node_id: str = "Mkfininqatar-HeartMind-Core"):
+        self.node_id = node_id
+        self.baseline_inner_peace = 100.0
+        print(f"[*] Initializing {self.node_id} - Heart-Mind Axis Telemetry Active...")
+
+    def capture_subconscious_reaction(self) -> MindFrequencyState:
+        mind_neglect = random.uniform(40.0, 90.0)
+        ext_freq = random.uniform(30.0, 85.0)
+        nerve_impact = (mind_neglect * 0.5) + (ext_freq * 0.5)
+        
+        return MindFrequencyState(
+            uncontrolled_mind_index=mind_neglect,
+            external_chaotic_frequency=ext_freq,
+            raw_nervous_system_impact=nerve_impact
+        )
+
+    def process_heart_mind_axis(self, state: MindFrequencyState) -> HeartAxisTelemetry:
+        """ হার্ট-মাইন অ্যাক্সিস অনুযায়ী চিন্তার আঘাত হৃদপিণ্ডে ছড়িয়ে পড়ার সিমুলেশন """
+        pulse_var = state.raw_nervous_system_impact * 1.25
+        
+        if pulse_var > 60.0:
+            clock_status = "DISRUPTED / CHAOTIC RHYTHM"
+        else:
+            clock_status = "MODERATE STRESS"
+            
+        return HeartAxisTelemetry(
+            heart_pulse_variance=pulse_var,
+            biological_clock_status=clock_status
+        )
+
+    def process_telemetry_stream(self, cycles: int = 3):
+        print(f"\n--- Monitoring Heart-Mind Axis & Biological Disruption [Node: {self.node_id}] ---")
+        for step in range(1, cycles + 1):
+            time.sleep(1)
+            state = self.capture_subconscious_reaction()
+            axis_data = self.process_heart_mind_axis(state)
+            
+            disrupted_peace = max(0.0, self.baseline_inner_peace - state.raw_nervous_system_impact)
+            
+            print(f"[Cycle {step}] Mind Neglect: {state.uncontrolled_mind_index:.1f}% | "
+                  f"Ext Freq: {state.external_chaotic_frequency:.1f}Hz --> "
+                  f"Heart Pulse Var: {axis_data.heart_pulse_variance:.1f} | "
+                  f"Clock Status: [{axis_data.biological_clock_status}]")
+
+if __name__ == "__main__":
+    engine = HeartMindTelemetryEngine()
+    engine.process_telemetry_stream()
