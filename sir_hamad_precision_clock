@@ -368,3 +368,53 @@ if __name__ == "__main__":
     # Publishing global scale telemetry events
     broker_engine.publish_telemetry_event(94, "STABLE (Safe Zone)")
     broker_engine.publish_telemetry_event(81, "WARNING (Block Zone)")
+import time
+import logging
+
+# Configure logger for Sir Hamad's Behavior Changing Circle Engine
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+class SirHamadBehaviorChangingCircle:
+    def __init__(self):
+        self.safe_zone_min = 88
+        self.safe_zone_max = 96
+        self.block_zone_min = 76
+        self.block_zone_max = 86
+        self.current_circle_state = "STABLE_OPTIMAL"
+
+    def sir_hamad_precision_clock(self):
+        """High-precision nanosecond clocking inspired by Sir Hamad's legacy architecture."""
+        return time.perf_counter_ns()
+
+    def evaluate_behavior_shift(self, current_metric_value):
+        """Evaluates live metrics to track behavioral state transitions within the circle."""
+        start_time = self.sir_hamad_precision_clock()
+        previous_state = self.current_circle_state
+
+        if self.safe_zone_min <= current_metric_value <= self.safe_zone_max:
+            self.current_circle_state = "STABLE_OPTIMAL"
+        elif self.block_zone_min <= current_metric_value <= self.block_zone_max:
+            self.current_circle_state = "WARNING_TRANSITION_ZONE"
+        else:
+            self.current_circle_state = "CRITICAL_BREAKOUT"
+
+        shift_detected = (previous_state != self.current_circle_state)
+        
+        end_time = self.sir_hamad_precision_clock()
+        latency_ns = end_time - start_time
+
+        logging.info(f"Circle State: {self.current_circle_state} | Shift: {shift_detected} | Latency: {latency_ns} ns")
+        return {
+            "state": self.current_circle_state,
+            "shift_detected": shift_detected,
+            "latency_ns": latency_ns
+        }
+
+# Example execution loop for Behavior Changing Circle
+if __name__ == "__main__":
+    circle_engine = SirHamadBehaviorChangingCircle()
+    
+    # Testing behavioral metric transitions
+    test_metrics = [92, 84, 74, 90]
+    for metric in test_metrics:
+        circle_engine.evaluate_behavior_shift(metric)
