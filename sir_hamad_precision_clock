@@ -242,3 +242,75 @@ async def websocket_telemetry_endpoint(websocket: WebSocket):
             await asyncio.sleep(1) # Send live telemetry update every 1 second
     except WebSocketDisconnect:
         print("Client disconnected from telemetry stream.")
+import time
+import hashlib
+import json
+import logging
+
+# Configure logger for Sir Hamad's Cryptographic Ledger Engine
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+class SirHamadCryptographicLedger:
+    def __init__(self):
+        self.chain = []
+        self.create_genesis_block()
+
+    def sir_hamad_precision_clock(self):
+        """High-precision nanosecond clocking inspired by Sir Hamad's legacy architecture."""
+        return time.perf_counter_ns()
+
+    def create_genesis_block(self):
+        """Creates the first block in the immutable ledger chain."""
+        genesis_record = {
+            "index": 0,
+            "timestamp": self.sir_hamad_precision_clock(),
+            "metric_value": 90,
+            "status": "GENESIS_BLOCK",
+            "previous_hash": "0" * 64
+        }
+        genesis_record["current_hash"] = self.calculate_hash(genesis_record)
+        self.chain.append(genesis_record)
+
+    def calculate_hash(self, block_data):
+        """Generates a secure SHA-256 hash for the given block data."""
+        block_copy = block_data.copy()
+        block_copy.pop("current_hash", None) # Exclude current hash from calculation
+        block_string = json.dumps(block_copy, sort_keys=True).encode()
+        return hashlib.sha256(block_string).hexdigest()
+
+    def add_telemetry_record(self, metric_value, status):
+        """Adds a new cryptographically chained telemetry record to the ledger."""
+        start_time = self.sir_hamad_precision_clock()
+        
+        previous_block = self.chain[-1]
+        new_index = len(self.chain)
+        timestamp = self.sir_hamad_precision_clock()
+        previous_hash = previous_block["current_hash"]
+
+        block_data = {
+            "index": new_index,
+            "timestamp": timestamp,
+            "metric_value": metric_value,
+            "status": status,
+            "previous_hash": previous_hash
+        }
+        
+        block_data["current_hash"] = self.calculate_hash(block_data)
+        self.chain.append(block_data)
+
+        end_time = self.sir_hamad_precision_clock()
+        latency_ns = end_time - start_time
+
+        logging.info(f"Ledger Updated | Index: {new_index} | Hash: {block_data['current_hash'][:12]}... | Latency: {latency_ns} ns")
+        return block_data
+
+# Example execution loop for Cryptographic Audit Trail
+if __name__ == "__main__":
+    ledger = SirHamadCryptographicLedger()
+    
+    # Adding sample telemetry records secured with SHA-256 block-chaining
+    ledger.add_telemetry_record(92, "STABLE (Safe Zone)")
+    ledger.add_telemetry_record(82, "WARNING (Block Zone)")
+    
+    print("\nFinal Cryptographic Ledger Chain:")
+    print(json.dumps(ledger.chain, indent=4))
