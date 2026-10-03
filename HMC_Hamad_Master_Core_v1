@@ -882,3 +882,11 @@ if __name__ == "__main__":
     twin_system.register_spatial_node("NODE_03", "Cerebral Perfusion Node", (0.0, 16.8, 5.4))
     
     twin_system.run_simulation(cycles=6)
+class TelemetryFilters:
+    @staticmethod
+    def moving_average(raw_stream, new_value, window_size=3):
+        """Apply moving average filter to eliminate sensor noise"""
+        raw_stream.append(new_value)
+        if len(raw_stream) > window_size:
+            raw_stream.pop(0)
+        return sum(raw_stream) / len(raw_stream)
