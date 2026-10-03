@@ -1106,3 +1106,33 @@ class ElectricalHumanCircuitCore:
             "Ground_Network": "Active Across Entire Body Structure",
             "Circuit_Result": circuit_condition
         }
+class HeartBioMagneticCircuit:
+    def __init__(self):
+        self.line_1_phase = "SA_Node_Primary_Phase_Trigger"      # Main Power Source (Active Push)
+        self.line_2_ground = "Body_Wide_Distributed_Ground"     # Whole Body Return Network
+        self.line_3_feedback = "Two_Way_Closed_Loop_Feedback"   # Joint & Organ Echo Return
+
+    def analyze_heart_progression(self, signal_quality, obstruction_detected=False):
+        """
+        Analyzes the 3 core progressive lines of the heart to check for flow or damage.
+        """
+        if not obstruction_detected and signal_quality >= 15.44:
+            status = "All 3 Lines Synchronized (Optimal Bio-Magnetic Flow)"
+        elif obstruction_detected:
+            status = "Critical Variance: Phase/Ground Resistance Detected"
+        else:
+            status = "Partial Flow Drop in Feedback Line"
+
+        return {
+            "Line_1_Phase_Power": self.line_1_phase,
+            "Line_2_Ground_Network": self.line_2_ground,
+            "Line_3_Two_Way_Loop": self.line_3_feedback,
+            "System_Circuit_Status": status
+        }
+
+# --- Testing the Heart 3-Line Circuit ---
+if __name__ == "__main__":
+    heart_system = HeartBioMagneticCircuit()
+    result = heart_system.analyze_heart_progression(signal_quality=15.44, obstruction_detected=False)
+    for k, v in result.items():
+        print(f"{k}: {v}")
