@@ -1136,3 +1136,56 @@ if __name__ == "__main__":
     result = heart_system.analyze_heart_progression(signal_quality=15.44, obstruction_detected=False)
     for k, v in result.items():
         print(f"{k}: {v}")
+import time
+import random
+
+class HMC_Hamad_Telemetry_Core:
+    def __init__(self):
+        self.system_title = "HMC_HAMAD_MASTER_CORE_v1 MCG TELEMETRY SYSTEM"
+        self.frequency_baseline = 15.44  # Hz
+        self.grid_resolution = "1.88-million-face 3D grid"
+        self.harmony_level = 99.8  # Percentage
+        self.is_external_shield_active = False
+
+    def monitor_circuit_status(self, phase_variance, reverse_flow_detected):
+        print(f"[{self.system_title}] Monitoring Live Telemetry...")
+        print(f"Current Baseline Frequency: {self.frequency_baseline} Hz | Grid: {self.grid_resolution}")
+        
+        if reverse_flow_detected or phase_variance > 15.0:
+            print("⚠️ ALERT: Critical Phase Variance / Reverse Backflow Detected in Circuit!")
+            self.engage_external_magnetic_shield()
+        else:
+            print(f"✅ System Harmony Stable at {self.harmony_level}% Synchronized.")
+
+    def engage_external_magnetic_shield(self):
+        self.is_external_shield_active = True
+        print("🛡️ ACTION: External Magnetic Electric Field Shield Engaged!")
+        print("   -> Acting as a gateway to maintain electrical conductivity.")
+        print("   -> Brain and Heart signals protected from panic/fluctuation response.")
+        self.initiate_gradual_repair_phase()
+
+    def initiate_gradual_repair_phase(self):
+        print("🔄 PROCESS: Cellular Self-Repair and Tissue Healing in Progress under Shield...")
+        repair_progress = 20
+        
+        while repair_progress < 100:
+            time.sleep(1) # Simulation delay for gradual healing
+            repair_progress += 25
+            print(f"   -> Healing Progress: {repair_progress}% completed...")
+            
+        print("✨ SUCCESS: Internal Reverse/Phase Line has recovered naturally.")
+        self.disengage_external_shield()
+
+    def disengage_external_shield(self):
+        self.is_external_shield_active = False
+        print("🔓 ACTION: External Magnetic Field Shield Removed. Normal Loop Restored.")
+
+# --- Execution Example ---
+if __name__ == "__main__":
+    telemetry_system = HMC_Hamad_Telemetry_Core()
+    
+    # Simulate a scenario where a joint or tissue experiences severe damage/reverse signal spike
+    simulated_phase_variance = 18.5
+    simulated_reverse_flow = True
+    
+    telemetry_system.monitor_circuit_status(simulated_phase_variance, simulated_reverse_flow)
