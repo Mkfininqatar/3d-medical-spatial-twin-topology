@@ -939,3 +939,41 @@ class MasterSensorBus:
         if master_state == "EMERGENCY_SHUTDOWN":
             return False
         return True
+import time
+import logging
+from core.spatial_mapper import SpatialMedicalTwin
+
+# Configure logging format
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler()]
+)
+
+def run_hamad_core_simulation():
+    logging.info("Initializing HMC Hamad Master Core v1 Simulation...")
+    twin_system = SpatialMedicalTwin()
+    
+    # Registering core anatomical topology nodes
+    twin_system.register_spatial_node("NODE_01", "Carotid/Vagus Master Bus", (0.0, 12.5, 3.2))
+    twin_system.register_spatial_node("NODE_02", "Heart Left Ventricle", (-2.1, 8.0, 1.0))
+    twin_system.register_spatial_node("NODE_03", "Cerebral Perfusion Node", (0.0, 16.8, 5.4))
+    
+    cycles = 6
+    for cycle in range(1, cycles + 1):
+        logging.info(f"--- Spatial Mapping Execution Cycle {cycle} ---")
+        twin_system.update_telemetry()
+        is_stable = twin_system.check_master_pipeline()
+        
+        logging.info(f"Master Bus Topology Status: {twin_system.master_status}")
+        for s_id, data in twin_system.remote_sensors.items():
+            logging.info(f"Organ: {data['location']} | Pos: {data['coordinates']} | Integrity: {data['smoothed_strength']:.2f}% | Status: {data['status']}")
+        
+        if not is_stable:
+            logging.critical("Cascaded core failure detected in spatial topology! Emergency shutdown executed.")
+            break
+        
+        time.sleep(1)
+
+if __name__ == "__main__":
+    run_hamad_core_simulation()
