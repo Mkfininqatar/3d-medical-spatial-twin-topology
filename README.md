@@ -257,3 +257,48 @@ A high-performance spatial twin topology framework integrated with robust HPC te
 * **Production-Ready Dependencies:** Locked and optimized package versions for seamless cross-environment compatibility.
 
 ## 📂 Project Architecture
+# 🧬 HMC Hamad Master Core v1
+### High-Performance Cardio-Neural Spatial Twin & Bio-Telemetry Architecture
+
+[![Status](https://img.shields.io/badge/System-Operational-success.svg)]()
+[![Core Constant](https://img.shields.io/badge/Threshold-15.44%20pT-blue.svg)]()
+[![Python](https://img.shields.io/badge/Python-3.10%2B-informational.svg)]()
+
+---
+
+## 🌟 Architecture Overview
+**HMC_Hamad_Master_Core_v1** is an advanced real-time biological telemetry and spatial twin architecture designed to decode magnetocardiogram (MCG) signals, map 3D organ topologies, and execute graded automated fail-safe responses[cite: 1]. The system uses the **Carotid/Vagus Core Line** as the primary sensor bus for systemic homeostasis.
+
+---
+
+## ⚙️ Core Pipeline Components
+
+### 1. MCGDecoder Component[cite: 1]
+* **Initialization**: `__init__(sensor_sensitivity_pico_tesla: float = 1.0)`[cite: 1]
+* **Function**: Decodes raw magnetic signal packets into 3-axis vectors ($\text{X, Y, Z}$) measured in PicoTesla ($\text{pT}$) for the telemetry grid[cite: 1].
+* **Validation**: `validate_magnetic_threshold(vectors, max_threshold=15.44)` $\rightarrow$ Validates vector magnitude $\le 15.44\text{ pT}$[cite: 1].
+
+### 2. EchoRateProcessor Component[cite: 1]
+* **Initialization**: `__init__(baseline_rate: float = 15.44)`[cite: 1]
+* **Function**: Computes the signal echo reflection rate based on microsecond-level clock synchronization ($\text{Eco Rate} = \frac{\text{Baseline Rate}}{\text{Latency}}$)[cite: 1].
+
+### 3. SignalPasserFilter Component[cite: 1]
+* **Initialization**: `__init__(cutoff_frequency: float = 15.44)`[cite: 1]
+* **Function**: Determines signal-passer modes for **High-Pass (R-Peak Isolation)** or **Low-Pass (Baseline Smoothing)** based on the $15.44\text{ Hz}$ cutoff constant[cite: 1].
+
+---
+
+## 🔄 Full Signal Processing Pipeline[cite: 1]
+
+```text
+[Raw MCG Packet (bytes)] 
+       ↓
+[MCGDecoder] ──> 3-Axis Magnetic Vectors (pT)[cite: 1]
+       ↓
+[validate_magnetic_threshold] ──> Check ≤ 15.44 pT[cite: 1]
+       ↓
+[EchoRateProcessor] ──> Calculate Eco Rate[cite: 1]
+       ↓
+[SignalPasserFilter] ──> High-Pass / Low-Pass Decode[cite: 1]
+       ↓
+[Decoded Signal] ──> Cardio-Neural Spatial Twin[cite: 1]
