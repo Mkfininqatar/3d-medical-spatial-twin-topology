@@ -781,3 +781,104 @@ if __name__ == "__main__":
     bio_bus.register_remote_sensor("SEN_01", "Carotid/Vagus Core Line")
     bio_bus.register_remote_sensor("SEN_02", "Peripheral Vascular Node")
     bio_bus.run_simulation(cycles=6)
+import time
+import random
+import logging
+
+# Configure structured telemetry logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler()]
+)
+
+class SpatialMedicalTwin:
+    def __init__(self):
+        self.master_status = "HEALTHY"
+        self.warning_threshold = 80.0
+        self.critical_threshold = 65.0
+        self.emergency_threshold = 50.0
+        self.remote_sensors = {}
+        logging.info("Spatial Medical Twin Architecture initialized successfully.")
+
+    def register_spatial_node(self, sensor_id, organ_name, coordinates):
+        """Register a sensor node mapped to a 3D spatial coordinate on an organ."""
+        self.remote_sensors[sensor_id] = {
+            "organ": organ_name,
+            "coordinates": coordinates,  # (X, Y, Z) spatial grid
+            "raw_stream": [],
+            "smoothed_strength": 100.0,
+            "status": "NORMAL"
+        }
+        logging.info(f"Mapped Spatial Node [{sensor_id}] to Organ: {organ_name} at Grid {coordinates}")
+
+    def apply_moving_average_filter(self, sensor_id, new_value, window_size=3):
+        sensor = self.remote_sensors[sensor_id]
+        sensor["raw_stream"].append(new_value)
+        
+        if len(sensor["raw_stream"]) > window_size:
+            sensor["raw_stream"].pop(0)
+            
+        sensor["smoothed_strength"] = sum(sensor["raw_stream"]) / len(sensor["raw_stream"])
+
+    def evaluate_graded_alert(self, strength):
+        if strength >= self.warning_threshold:
+            return "NORMAL"
+        elif strength >= self.critical_threshold:
+            return "LEVEL_1_WARNING"
+        elif strength >= self.emergency_threshold:
+            return "LEVEL_2_CRITICAL"
+        else:
+            return "EMERGENCY_SHUTDOWN"
+
+    def update_telemetry(self):
+        for s_id, data in self.remote_sensors.items():
+            # Simulate real-time biological telemetry variance
+            fluctuation = random.uniform(-4.5, 1.5)
+            current_raw = max(0.0, min(100.0, data["smoothed_strength"] + fluctuation))
+            
+            self.apply_moving_average_filter(s_id, current_raw)
+            new_status = self.evaluate_graded_alert(data["smoothed_strength"])
+            
+            if new_status != data["status"]:
+                data["status"] = new_status
+                logging.warning(f"Spatial Damage Alert -> Organ [{data['organ']} | Node {s_id}] status: {new_status} (Integrity: {data['smoothed_strength']:.2f}%)")
+
+    def check_master_pipeline(self):
+        total_strength = sum(s["smoothed_strength"] for s in self.remote_sensors.values())
+        avg_strength = total_strength / len(self.remote_sensors) if self.remote_sensors else 0
+
+        master_state = self.evaluate_graded_alert(avg_strength)
+        if master_state != self.master_status:
+            self.master_status = master_state
+            logging.error(f"Master Bus Topology state updated: {self.master_status} (System Integrity: {avg_strength:.2f}%)")
+
+        if master_state == "EMERGENCY_SHUTDOWN":
+            return False
+        return True
+
+    def run_simulation(self, cycles=6):
+        logging.info("--- Starting 3D Medical Spatial Twin Simulation ---")
+        for cycle in range(1, cycles + 1):
+            logging.info(f"--- Spatial Mapping Cycle {cycle} ---")
+            self.update_telemetry()
+            is_stable = self.check_master_pipeline()
+            
+            for s_id, data in self.remote_sensors.items():
+                logging.info(f"Organ: {data['organ']} | Pos: {data['coordinates']} | Integrity: {data['smoothed_strength']:.2f}% | Status: {data['status']}")
+            
+            if not is_stable:
+                logging.critical("Cascaded core failure detected in spatial topology! Emergency shutdown executed.")
+                break
+            
+            time.sleep(1)
+
+if __name__ == "__main__":
+    twin_system = SpatialMedicalTwin()
+    
+    # Registering core anatomical topology nodes
+    twin_system.register_spatial_node("NODE_01", "Carotid/Vagus Master Bus", (0.0, 12.5, 3.2))
+    twin_system.register_spatial_node("NODE_02", "Heart Left Ventricle", (-2.1, 8.0, 1.0))
+    twin_system.register_spatial_node("NODE_03", "Cerebral Perfusion Node", (0.0, 16.8, 5.4))
+    
+    twin_system.run_simulation(cycles=6)
