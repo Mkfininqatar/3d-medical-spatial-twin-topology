@@ -1242,3 +1242,9 @@ if __name__ == "__main__":
     simulated_reverse_flow = True
     
     telemetry_system.monitor_circuit_status(simulated_phase_variance, simulated_reverse_flow)
+def monitor_circuit_status(self, phase_variance, reverse_flow_detected):
+    # ... (১. রিয়েল-টাইম মনিটরিং) ...
+    if reverse_flow_detected or phase_variance > 15.0:
+        # ... (২. ড্যামেজ ডিটেকশন ও বাইপাস অ্যাক্টিভেশন) ...
+        print("⚠️ ALERT: Phase variance/Backflow detected in RIGHT ELBOW! Activating Bypass Gateway...")
+        self.engage_bypass_and_accelerate_healing() # এটি বাম হাতের জন্য নির্দিষ্ট হবে
