@@ -977,3 +977,66 @@ def run_hamad_core_simulation():
 
 if __name__ == "__main__":
     run_hamad_core_simulation()
+import numpy as np
+import time
+
+class HMCHamadMasterCore:
+    def __init__(self, core_version="v1.0"):
+        self.core_version = core_version
+        self.spatial_grid_resolution = 1880000  # 1.88 million-face 3D spatial grid
+        self.frequency_threshold = 15.44       # Frequency threshold baseline
+        
+    def auto_generate_bio_magnetic_field(self, state="unconscious"):
+        """
+        Simulates the body as a self-generating power plant.
+        Generates magnetic electrons whether awake or in deep sleep/coma.
+        """
+        # Biological chemistry combination & physics reaction factor
+        base_electrons = np.random.uniform(1.2, 3.5)
+        
+        if state == "unconscious" or state == "coma":
+            # Unconscious state strips away external noise, revealing pure triggers
+            magnetic_electrons = base_electrons * 4.88
+            trigger_status = "Natural Trigger Locked"
+        else:
+            magnetic_electrons = base_electrons * 1.5
+            trigger_status = "External Mixed Noise"
+            
+        return {
+            "system_state": state,
+            "auto_generated_electrons": round(magnetic_electrons, 4),
+            "trigger_status": trigger_status
+        }
+
+    def decode_mcg_sequence(self, raw_telemetry_signal):
+        """
+        Decodes magnetic frequency sequences from MCG sensors.
+        Treats sensors as passive listeners waiting for natural triggers.
+        """
+        # Combination (Bio-Chemistry) & Reaction (Physics) mapping
+        chemical_combination = np.mean(raw_telemetry_signal) * 0.618
+        physical_reaction = np.std(raw_telemetry_signal) * 1.618
+        
+        # Zero-drift frequency calculation
+        decoded_frequency = (chemical_combination + physical_reaction) / self.frequency_threshold
+        
+        return {
+            "chemical_combination_index": round(chemical_combination, 4),
+            "physical_reaction_rate": round(physical_reaction, 4),
+            "decoded_magnetic_frequency": round(decoded_frequency, 4),
+            "grid_alignment": "Synchronized with 3D Spatial Topology"
+        }
+
+# --- Execution Pipeline ---
+if __name__ == "__main__":
+    core = HMCHamadMasterCore(core_version="HMC_Hamad_Master_Core_v1")
+    print(f"--- Initializing {core.core_version} ---")
+    
+    # Simulating an unconscious bio-magnetic state (e.g., resting or deep coma state)
+    bio_state = core.auto_generate_bio_magnetic_field(state="unconscious")
+    print("Bio-System State:", bio_state)
+    
+    # Simulating raw passive MCG sensor input signals
+    dummy_signal = np.array([15.2, 14.8, 16.5, 15.9, 15.44, 16.1])
+    decode_result = core.decode_mcg_sequence(dummy_signal)
+    print("MCG Decode Result:", decode_result)
