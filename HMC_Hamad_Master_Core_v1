@@ -611,3 +611,79 @@ if __name__ == "__main__":
     bio_bus.register_remote_sensor("SEN_01", "Carotid/Vagus Core Line")
     bio_bus.register_remote_sensor("SEN_02", "Peripheral Vascular-Heart Node")
     bio_bus.run_simulation(cycles=5)
+import time
+import random
+
+class MasterSensorBus:
+    def __init__(self):
+        self.master_status = "HEALTHY"
+        self.integrity_threshold = 80.0
+        self.remote_sensors = {}
+
+    def register_remote_sensor(self, sensor_id, location):
+        self.remote_sensors[sensor_id] = {
+            "location": location,
+            "raw_stream": [],
+            "smoothed_strength": 100.0,
+            "status": "ACTIVE"
+        }
+
+    def apply_moving_average_filter(self, sensor_id, new_value, window_size=3):
+        """Apply moving average filter to eliminate sensor noise"""
+        sensor = self.remote_sensors[sensor_id]
+        sensor["raw_stream"].append(new_value)
+        
+        # Maintain window size
+        if len(sensor["raw_stream"]) > window_size:
+            sensor["raw_stream"].pop(0)
+            
+        # Calculate mathematical average for smoothed value
+        smoothed_value = sum(sensor["raw_stream"]) / len(sensor["raw_stream"])
+        sensor["smoothed_strength"] = smoothed_value
+
+    def update_telemetry(self):
+        for s_id, data in self.remote_sensors.items():
+            # Generate random data for simulation
+            fluctuation = random.uniform(-3.0, 1.5)
+            current_raw = max(0.0, min(100.0, data["smoothed_strength"] + fluctuation))
+            
+            # Pass data through the moving average filter
+            self.apply_moving_average_filter(s_id, current_raw)
+            
+            # Check threshold based on smoothed value
+            if data["smoothed_strength"] < self.integrity_threshold:
+                data["status"] = "WARNING/LEAK_DETECTED"
+            else:
+                data["status"] = "ACTIVE"
+
+    def check_master_pipeline(self):
+        total_strength = sum(s["smoothed_strength"] for s in self.remote_sensors.values())
+        avg_strength = total_strength / len(self.remote_sensors) if self.remote_sensors else 0
+
+        if avg_strength < self.integrity_threshold:
+            self.master_status = "CRITICAL_LEAK_COLLAPSE"
+            return False
+        return True
+
+    def run_simulation(self, cycles=5):
+        print("--- Bio-Telemetry Master Bus with Noise Filter Started ---\n")
+        for cycle in range(1, cycles + 1):
+            self.update_telemetry()
+            is_stable = self.check_master_pipeline()
+            
+            print(f"Cycle {cycle}:")
+            print(f"  Master Bus Status: {self.master_status}")
+            for s_id, data in self.remote_sensors.items():
+                print(f"  - Sensor [{s_id}] ({data['location']}): Filtered Strength = {data['smoothed_strength']:.2f}% | Status: {data['status']}")
+            
+            if not is_stable:
+                print("\n[ALERT]: Core pipeline leak verified via noise filter! Emergency shutdown initiated.")
+                break
+            print("-" * 50)
+            time.sleep(1)
+
+if __name__ == "__main__":
+    bio_bus = MasterSensorBus()
+    bio_bus.register_remote_sensor("SEN_01", "Carotid/Vagus Core Line")
+    bio_bus.register_remote_sensor("SEN_02", "Peripheral Vascular-Heart Node")
+    bio_bus.run_simulation(cycles=5)
