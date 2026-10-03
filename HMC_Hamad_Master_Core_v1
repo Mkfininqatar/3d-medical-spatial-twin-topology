@@ -687,3 +687,97 @@ if __name__ == "__main__":
     bio_bus.register_remote_sensor("SEN_01", "Carotid/Vagus Core Line")
     bio_bus.register_remote_sensor("SEN_02", "Peripheral Vascular-Heart Node")
     bio_bus.run_simulation(cycles=5)
+import time
+import random
+import logging
+
+# Configure structured telemetry logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler()]
+)
+
+class MasterSensorBus:
+    def __init__(self):
+        self.master_status = "HEALTHY"
+        self.warning_threshold = 80.0
+        self.critical_threshold = 65.0
+        self.emergency_threshold = 50.0
+        self.remote_sensors = {}
+        logging.info("MasterSensorBus initialized with cascading fail-safe protocols.")
+
+    def register_remote_sensor(self, sensor_id, location):
+        self.remote_sensors[sensor_id] = {
+            "location": location,
+            "raw_stream": [],
+            "smoothed_strength": 100.0,
+            "status": "NORMAL"
+        }
+        logging.info(f"Registered sensor node [{sensor_id}] at location: {location}")
+
+    def apply_moving_average_filter(self, sensor_id, new_value, window_size=3):
+        sensor = self.remote_sensors[sensor_id]
+        sensor["raw_stream"].append(new_value)
+        
+        if len(sensor["raw_stream"]) > window_size:
+            sensor["raw_stream"].pop(0)
+            
+        sensor["smoothed_strength"] = sum(sensor["raw_stream"]) / len(sensor["raw_stream"])
+
+    def evaluate_graded_alert(self, strength):
+        if strength >= self.warning_threshold:
+            return "NORMAL"
+        elif strength >= self.critical_threshold:
+            return "LEVEL_1_WARNING"
+        elif strength >= self.emergency_threshold:
+            return "LEVEL_2_CRITICAL"
+        else:
+            return "EMERGENCY_SHUTDOWN"
+
+    def update_telemetry(self):
+        for s_id, data in self.remote_sensors.items():
+            fluctuation = random.uniform(-4.5, 1.5)
+            current_raw = max(0.0, min(100.0, data["smoothed_strength"] + fluctuation))
+            
+            self.apply_moving_average_filter(s_id, current_raw)
+            new_status = self.evaluate_graded_alert(data["smoothed_strength"])
+            
+            if new_status != data["status"]:
+                data["status"] = new_status
+                logging.warning(f"Sensor [{s_id}] state transitioned to: {new_status} (Strength: {data['smoothed_strength']:.2f}%)")
+
+    def check_master_pipeline(self):
+        total_strength = sum(s["smoothed_strength"] for s in self.remote_sensors.values())
+        avg_strength = total_strength / len(self.remote_sensors) if self.remote_sensors else 0
+
+        master_state = self.evaluate_graded_alert(avg_strength)
+        if master_state != self.master_status:
+            self.master_status = master_state
+            logging.error(f"Master Bus state updated: {self.master_status} (Avg Strength: {avg_strength:.2f}%)")
+
+        if master_state == "EMERGENCY_SHUTDOWN":
+            return False
+        return True
+
+    def run_simulation(self, cycles=6):
+        logging.info("--- Starting Bio-Telemetry Master Bus Simulation ---")
+        for cycle in range(1, cycles + 1):
+            logging.info(f"--- Execution Cycle {cycle} ---")
+            self.update_telemetry()
+            is_stable = self.check_master_pipeline()
+            
+            for s_id, data in self.remote_sensors.items():
+                logging.info(f"Sensor [{s_id}] -> Strength: {data['smoothed_strength']:.2f}% | Status: {data['status']}")
+            
+            if not is_stable:
+                logging.critical("Cascaded failure detected! Master pipeline collapse. Emergency shutdown executed.")
+                break
+            
+            time.sleep(1)
+
+if __name__ == "__main__":
+    bio_bus = MasterSensorBus()
+    bio_bus.register_remote_sensor("SEN_01", "Carotid/Vagus Core Line")
+    bio_bus.register_remote_sensor("SEN_02", "Peripheral Vascular Node")
+    bio_bus.run_simulation(cycles=6)
