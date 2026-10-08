@@ -433,3 +433,22 @@ class EverTimeNervousVibrationEngine:
 if __name__ == "__main__":
     engine = EverTimeNervousVibrationEngine()
     engine.render_dashboard()
+import numpy as np
+
+# Let's calculate the normal/baseline propagation speed of bio-neural and cardiac telemetry signals 
+# across the "Ever-Time" sovereign telemetry matrix (e.g., action potential propagation speed in myelinated nerves).
+# Typical myelinated nerve conduction velocity: ~60 to 120 m/s
+# Cardiac electrical propagation velocity: ~0.5 to 4 m/s
+# Let's write a python script to compute average and normal speeds and print detailed metrics.
+
+conduction_velocities = {
+    "Myelinated Motor/Sensory Nerves": 90.0, # m/s
+    "Spinal Pathways": 75.0, # m/s
+    "Cardio Conduction System (Purkinje fibers)": 4.0, # m/s
+    "Cerebral Cortical Propagation": 25.0 # m/s
+}
+
+mean_speed = np.mean(list(conduction_velocities.values()))
+print(f"Mean Normal Signal Propagation Speed: {mean_speed:.2f} m/s")
+for part, speed in conduction_velocities.items():
+    print(f"- {part}: {speed} m/s")
