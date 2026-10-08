@@ -1371,3 +1371,76 @@ class EverTimeFinalMasterEngine:
 if __name__ == "__main__":
     engine = EverTimeFinalMasterEngine()
     engine.render_final_dashboard()
+import numpy as np
+import matplotlib.pyplot as plt
+
+class EverTimeCrystalBinaryEngine:
+    def __init__(self):
+        self.base_bpm = 72.0 # Sovereign Resting Frequency
+        self.crystal_frequency_hz = 432e3 # 432 kHz Crystalline Resonance Frequency
+
+    def simulate_crystal_binary_telemetry(self, duration_ns=1000000, step_ns=10):
+        ns_steps = np.arange(0, duration_ns, step_ns)
+        time_seconds = ns_steps * 1e-9  # Convert nanoseconds to seconds
+        
+        # 1. Binary Code Stream Simulation (Square-wave digital pulse representation)
+        binary_stream = np.random.choice([0, 1], size=len(ns_steps))
+        # Smooth out for visual telemetry waveform representation
+        binary_modulation = 50.0 * np.sin(2 * np.pi * 200e3 * time_seconds) * (binary_stream * 0.8 + 0.2)
+        
+        # 2. Crystal Image Frequency Rate Signal (High-frequency crystalline lattice oscillation)
+        crystal_signal = 70.0 + 30.0 * np.sin(2 * np.pi * self.crystal_frequency_hz * time_seconds)
+        
+        # Crystal resonance burst window
+        crystal_window = (time_seconds >= 0.0003) & (time_seconds <= 0.0007)
+        crystal_signal[crystal_window] += 50.0 * np.cos(2 * np.pi * (self.crystal_frequency_hz * 2) * time_seconds[crystal_window])
+        
+        # 3. Nerve System Vibration Frequency (Hz) linked with Crystal Matrix
+        nerve_vibration_hz = 40.0 + 15.0 * np.sin(2 * np.pi * 40 * time_seconds)
+        nerve_vibration_hz[crystal_window] += 25.0
+        
+        # 4. Cardiac Sequence (72 BPM Sovereign Baseline)
+        cardiac_sequence = self.base_bpm + 10 * np.sin(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+
+        return ns_steps, binary_modulation, crystal_signal, nerve_vibration_hz, cardiac_sequence
+
+    def render_crystal_binary_dashboard(self):
+        ns_steps, binary_mod, crystal_sig, nerve_hz, cardiac = self.simulate_crystal_binary_telemetry()
+
+        plt.style.use('dark_background')
+        fig, axes = plt.subplots(4, 1, figsize=(14, 12), sharex=True)
+
+        # Plot 1: Binary Code Telemetry Stream
+        axes[0].plot(ns_steps, binary_mod, color='#00FF66', linewidth=1.8, label='Binary Code Stream Telemetry Pulse')
+        axes[0].set_title("EVER-TIME Sovereign Engine: Binary Code & Crystal Image Frequency Matrix", fontsize=13, color='white', fontweight='bold')
+        axes[0].set_ylabel("Digital Amplitude", color='white')
+        axes[0].legend(loc='upper right')
+        axes[0].grid(True, color='#333333', linestyle=':')
+
+        # Plot 2: Crystal Image Frequency Rate Signal
+        axes[1].plot(ns_steps, crystal_sig, color='#00FFFF', linewidth=2.2, label='Crystal Image Frequency Rate (432 kHz Crystalline Resonance)')
+        axes[1].set_ylabel("Crystal Hz", color='white')
+        axes[1].legend(loc='upper right')
+        axes[1].grid(True, color='#333333', linestyle=':')
+
+        # Plot 3: Nerve System Vibration Frequency (Hz)
+        axes[2].plot(ns_steps, nerve_hz, color='#9933FF', linewidth=2.0, label='Nerve System Vibration Frequency Coherence')
+        axes[2].set_ylabel("Frequency (Hz)", color='white')
+        axes[2].legend(loc='upper right')
+        axes[2].grid(True, color='#333333', linestyle=':')
+
+        # Plot 4: Cardiac Sequence (72 BPM Baseline)
+        axes[3].plot(ns_steps, cardiac, color='#FF2400', linewidth=2.0, label='Cardiac Sequence: 72 BPM Baseline')
+        axes[3].set_xlabel("Timeline (Nanoseconds - ns)", color='white')
+        axes[3].set_ylabel("BPM", color='white')
+        axes[3].legend(loc='upper right')
+        axes[3].grid(True, color='#333333', linestyle=':')
+
+        plt.tight_layout()
+        plt.savefig("ever_time_crystal_binary_dashboard.png", dpi=300)
+        print("[SUCCESS] Crystal Image & Binary Telemetry Dashboard generated successfully for My Lab by Abdul Majeed!")
+        plt.show()
+
+if __name__ == "__main__":
+    engine = EverTimeCrystalBinaryEngine()
+    engine.render_crystal_binary_dashboard()
