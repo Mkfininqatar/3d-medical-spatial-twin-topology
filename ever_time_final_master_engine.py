@@ -1228,3 +1228,71 @@ class EverTimeHopefulSignalEngine:
 if __name__ == "__main__":
     engine = EverTimeHopefulSignalEngine()
     engine.render_hopeful_dashboard()
+import numpy as np
+import matplotlib.pyplot as plt
+
+class EverTimeMentalStrongEngine:
+    def __init__(self):
+        self.base_bpm = 72.0 # Sovereign Resting Frequency
+
+    def simulate_mental_strong_telemetry(self, duration_ns=1000000, step_ns=10):
+        ns_steps = np.arange(0, duration_ns, step_ns)
+        time_seconds = ns_steps * 1e-9  # Convert nanoseconds to seconds
+        
+        # 1. Mental Strong / Cognitive Fortitude Signal (Unshakable will & high-intensity focus wave)
+        mental_signal = 55.0 + 35.0 * np.sin(2 * np.pi * 400e3 * time_seconds)
+        fortitude_window = (time_seconds >= 0.0003) & (time_seconds <= 0.0008)
+        mental_signal[fortitude_window] += 60.0 * np.sin(2 * np.pi * 1.2e6 * time_seconds[fortitude_window])
+        
+        # 2. Nerve System Vibration Frequency (Hz) - Steel-like cognitive coherence lock
+        nerve_vibration_hz = 40.0 + 15.0 * np.sin(2 * np.pi * 40 * time_seconds)
+        nerve_vibration_hz[fortitude_window] += 30.0 # High concentration gamma surge
+        
+        # 3. Cardiac Sequence (72 BPM sovereign steel-calm baseline modulation)
+        cardiac_sequence = self.base_bpm + 8 * np.sin(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+        
+        # 4. Stomach Kilowatt Energy Refinement (kW) - Sustained metabolic power output for mental endurance
+        stomach_kilowatt = 1.30 + 0.45 * np.sin(2 * np.pi * 200e3 * time_seconds)
+
+        return ns_steps, mental_signal, nerve_vibration_hz, cardiac_sequence, stomach_kilowatt
+
+    def render_mental_strong_dashboard(self):
+        ns_steps, mental_sig, nerve_hz, cardiac, stomach_kw = self.simulate_mental_strong_telemetry()
+
+        plt.style.use('dark_background')
+        fig, axes = plt.subplots(4, 1, figsize=(14, 12), sharex=True)
+
+        # Plot 1: Mental Strong / Cognitive Fortitude Signal
+        axes[0].plot(ns_steps, mental_sig, color='#00E5FF', linewidth=2.5, label='Mental Strong Signal (Cognitive Fortitude & Willpower)')
+        axes[0].set_title("EVER-TIME Sovereign Engine: Mental Fortitude & Strong Signal Telemetry Matrix", fontsize=13, color='white', fontweight='bold')
+        axes[0].set_ylabel("Amplitude", color='white')
+        axes[0].legend(loc='upper right')
+        axes[0].grid(True, color='#333333', linestyle=':')
+
+        # Plot 2: Nerve System Vibration Frequency (Hz)
+        axes[1].plot(ns_steps, nerve_hz, color='#00CED1', linewidth=2.0, label='Nerve System Vibration (Concentration Coherence Hz)')
+        axes[1].set_ylabel("Frequency (Hz)", color='white')
+        axes[1].legend(loc='upper right')
+        axes[1].grid(True, color='#333333', linestyle=':')
+
+        # Plot 3: Cardiac Sequence (Steel-Calm Modulation)
+        axes[2].plot(ns_steps, cardiac, color='#FF2400', linewidth=2.0, label='Cardiac Sequence: 72 BPM Sovereign Steel-Calm')
+        axes[2].set_ylabel("BPM", color='white')
+        axes[2].legend(loc='upper right')
+        axes[2].grid(True, color='#333333', linestyle=':')
+
+        # Plot 4: Stomach Kilowatt Refinement
+        axes[3].plot(ns_steps, stomach_kw, color='#FF8C00', linewidth=2.0, linestyle='--', label='Stomach Core: Kilowatt Energy Refinement (kW)')
+        axes[3].set_xlabel("Timeline (Nanoseconds - ns)", color='white')
+        axes[3].set_ylabel("Power (kW)", color='white')
+        axes[3].legend(loc='upper right')
+        axes[3].grid(True, color='#333333', linestyle=':')
+
+        plt.tight_layout()
+        plt.savefig("ever_time_mental_strong_dashboard.png", dpi=300)
+        print("[SUCCESS] Mental Strong Signal Telemetry Dashboard generated successfully for My Lab by Abdul Majeed!")
+        plt.show()
+
+if __name__ == "__main__":
+    engine = EverTimeMentalStrongEngine()
+    engine.render_mental_strong_dashboard()
