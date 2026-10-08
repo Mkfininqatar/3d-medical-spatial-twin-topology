@@ -677,3 +677,74 @@ class EverTimeNerveFreezeEngine:
 if __name__ == "__main__":
     engine = EverTimeNerveFreezeEngine()
     engine.render_freeze_dashboard()
+import numpy as np
+import matplotlib.pyplot as plt
+
+class EverTimeAlertModeEngine:
+    def __init__(self):
+        self.base_bpm = 72.0 # Sovereign Resting Frequency
+        self.speed_threshold = 40.0 # m/s - Below this triggers Alert Mode
+
+    def simulate_alert_telemetry(self, duration_ns=1000000, step_ns=10):
+        ns_steps = np.arange(0, duration_ns, step_ns)
+        time_seconds = ns_steps * 1e-9  # Convert nanoseconds to seconds
+        
+        # 1. Nerve Propagation Speed with Freezing Window
+        nerve_speed = 90.0 * np.ones_like(time_seconds)
+        freeze_window = (time_seconds >= 0.0003) & (time_seconds <= 0.0007)
+        nerve_speed[freeze_window] = 12.5 # Drops into danger zone
+        
+        # 2. Alert Trigger State (1 = Normal, 5 = Alert/Warning Mode Active)
+        alert_state = np.ones_like(time_seconds)
+        alert_state[freeze_window] = 5.0 # Spike during freezing / slow rate
+        
+        # 3. Cardiac Rhythm Sequence (72 BPM baseline)
+        cardiac_sequence = self.base_bpm + 15 * np.sin(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+        
+        # 4. Stomach Kilowatt Energy Refinement (kW)
+        stomach_kilowatt = 1.25 + 0.45 * np.sin(2 * np.pi * 200e3 * time_seconds)
+
+        return ns_steps, nerve_speed, alert_state, cardiac_sequence, stomach_kilowatt
+
+    def render_alert_dashboard(self):
+        ns_steps, nerve_speed, alert_state, cardiac, stomach_kw = self.simulate_alert_telemetry()
+
+        plt.style.use('dark_background')
+        fig, axes = plt.subplots(4, 1, figsize=(14, 12), sharex=True)
+
+        # Plot 1: Nerve Speed & Freezing Drop
+        axes[0].plot(ns_steps, nerve_speed, color='#00FFFF', linewidth=2.2, label='Nerve Signal Propagation Speed (m/s)')
+        axes[0].axhline(y=self.speed_threshold, color='#FF0000', linestyle='--', linewidth=1.5, label='Alert Threshold (40 m/s)')
+        axes[0].set_title("EVER-TIME Sovereign Engine: Alert Mode & Nerve Freezing Telemetry Matrix", fontsize=13, color='white', fontweight='bold')
+        axes[0].set_ylabel("Velocity (m/s)", color='white')
+        axes[0].legend(loc='upper right')
+        axes[0].grid(True, color='#333333', linestyle=':')
+
+        # Plot 2: Alert Mode Trigger State
+        axes[1].plot(ns_steps, alert_state, color='#FF2400', linewidth=2.5, label='System Alert Mode Trigger (Active during Freeze)')
+        axes[1].fill_between(ns_steps, 1, alert_state, color='#FF2400', alpha=0.3)
+        axes[1].set_ylabel("Alert State", color='white')
+        axes[1].legend(loc='upper right')
+        axes[1].grid(True, color='#333333', linestyle=':')
+
+        # Plot 3: Cardiac Sequence (72 BPM)
+        axes[2].plot(ns_steps, cardiac, color='#FFCC00', linewidth=2.0, label='Cardiac Sequence: 72 BPM Baseline')
+        axes[2].set_ylabel("BPM", color='white')
+        axes[2].legend(loc='upper right')
+        axes[2].grid(True, color='#333333', linestyle=':')
+
+        # Plot 4: Stomach Kilowatt Refinement
+        axes[3].plot(ns_steps, stomach_kw, color='#FF8C00', linewidth=2.0, linestyle='--', label='Stomach Core: Kilowatt Energy Refinement (kW)')
+        axes[3].set_xlabel("Timeline (Nanoseconds - ns)", color='white')
+        axes[3].set_ylabel("Power (kW)", color='white')
+        axes[3].legend(loc='upper right')
+        axes[3].grid(True, color='#333333', linestyle=':')
+
+        plt.tight_layout()
+        plt.savefig("ever_time_alert_mode_dashboard.png", dpi=300)
+        print("[SUCCESS] Alert Mode Telemetry Dashboard generated successfully for My Lab by Abdul Majeed!")
+        plt.show()
+
+if __name__ == "__main__":
+    engine = EverTimeAlertModeEngine()
+    engine.render_alert_dashboard()
