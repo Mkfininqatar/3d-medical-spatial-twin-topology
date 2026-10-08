@@ -748,3 +748,73 @@ class EverTimeAlertModeEngine:
 if __name__ == "__main__":
     engine = EverTimeAlertModeEngine()
     engine.render_alert_dashboard()
+import numpy as np
+import matplotlib.pyplot as plt
+
+class EverTimeVoyeurSignalEngine:
+    def __init__(self):
+        self.base_bpm = 72.0 # Sovereign Resting Frequency
+
+    def simulate_voyeur_telemetry(self, duration_ns=1000000, step_ns=10):
+        ns_steps = np.arange(0, duration_ns, step_ns)
+        time_seconds = ns_steps * 1e-9  # Convert nanoseconds to seconds
+        
+        # 1. Voyeur / Visual Cortex Stimulus Signal (High-frequency visual tracking pulse)
+        voyeur_signal = 60.0 + 30.0 * np.sin(2 * np.pi * 300e3 * time_seconds)
+        
+        # Spike or reaction during a specific visual capture window
+        capture_window = (time_seconds >= 0.0004) & (time_seconds <= 0.0008)
+        voyeur_signal[capture_window] += 40.0 * np.sin(2 * np.pi * 1.5e6 * time_seconds[capture_window])
+        
+        # 2. Nerve Propagation Speed (Showing minor reflex adjustment during visual capture)
+        nerve_speed = 90.0 * np.ones_like(time_seconds)
+        nerve_speed[capture_window] = 98.5 # Reflex boost
+        
+        # 3. Cardiac Rhythm Sequence (72 BPM baseline)
+        cardiac_sequence = self.base_bpm + 15 * np.sin(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+        
+        # 4. Stomach Kilowatt Energy Refinement (kW)
+        stomach_kilowatt = 1.25 + 0.45 * np.sin(2 * np.pi * 200e3 * time_seconds)
+
+        return ns_steps, voyeur_signal, nerve_speed, cardiac_sequence, stomach_kilowatt
+
+    def render_voyeur_dashboard(self):
+        ns_steps, voyeur_sig, nerve_speed, cardiac, stomach_kw = self.simulate_voyeur_telemetry()
+
+        plt.style.use('dark_background')
+        fig, axes = plt.subplots(4, 1, figsize=(14, 12), sharex=True)
+
+        # Plot 1: Voyeur / Visual Cortex Telemetry Signal
+        axes[0].plot(ns_steps, voyeur_sig, color='#FF00FF', linewidth=2.3, label='Voyeur / Visual Cortex Stimulus Signal')
+        axes[0].set_title("EVER-TIME Sovereign Engine: Voyeur Signal & Visual Cortex Telemetry Matrix", fontsize=13, color='white', fontweight='bold')
+        axes[0].set_ylabel("Amplitude", color='white')
+        axes[0].legend(loc='upper right')
+        axes[0].grid(True, color='#333333', linestyle=':')
+
+        # Plot 2: Nerve Propagation Speed (Reflex Response)
+        axes[1].plot(ns_steps, nerve_speed, color='#00FFFF', linewidth=2.0, label='Nerve Propagation Speed (Reflex Modulation)')
+        axes[1].set_ylabel("Velocity (m/s)", color='white')
+        axes.legend = axes[1].legend(loc='upper right')
+        axes[1].grid(True, color='#333333', linestyle=':')
+
+        # Plot 3: Cardiac Sequence (72 BPM)
+        axes[2].plot(ns_steps, cardiac, color='#FF2400', linewidth=2.0, label='Cardiac Sequence: 72 BPM Baseline')
+        axes[2].set_ylabel("BPM", color='white')
+        axes[2].legend(loc='upper right')
+        axes[2].grid(True, color='#333333', linestyle=':')
+
+        # Plot 4: Stomach Kilowatt Refinement
+        axes[3].plot(ns_steps, stomach_kw, color='#FF8C00', linewidth=2.0, linestyle='--', label='Stomach Core: Kilowatt Energy Refinement (kW)')
+        axes[3].set_xlabel("Timeline (Nanoseconds - ns)", color='white')
+        axes[3].set_ylabel("Power (kW)", color='white')
+        axes[3].legend(loc='upper right')
+        axes[3].grid(True, color='#333333', linestyle=':')
+
+        plt.tight_layout()
+        plt.savefig("ever_time_voyeur_signal_dashboard.png", dpi=300)
+        print("[SUCCESS] Voyeur Signal Telemetry Dashboard generated successfully for My Lab by Abdul Majeed!")
+        plt.show()
+
+if __name__ == "__main__":
+    engine = EverTimeVoyeurSignalEngine()
+    engine.render_voyeur_dashboard()
