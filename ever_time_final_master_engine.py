@@ -216,3 +216,69 @@ class NanosecondSequenceEngine:
 if __name__ == "__main__":
     engine = NanosecondSequenceEngine()
     engine.render_nanosecond_dashboard()
+import numpy as np
+import matplotlib.pyplot as plt
+
+class EverTimePowerTelemetryEngine:
+    def __init__(self):
+        self.base_bpm = 72.0 # Sovereign Resting Frequency
+
+    def simulate_power_and_sequences(self, duration_ns=1000000, step_ns=10):
+        """
+        Simulates nanosecond sequences along with Electrical Power (Watts/sec) throughput.
+        """
+        ns_steps = np.arange(0, duration_ns, step_ns)
+        time_seconds = ns_steps * 1e-9  # Convert nanoseconds to seconds
+        
+        # 1. Cardiac Rhythm Sequence (72 BPM baseline with Red Phase Wave Doppler logic)
+        cardiac_sequence = self.base_bpm + 15 * np.sin(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+        
+        # 2. Electrical Power Output (Watts per second / Power Dissipation from Cardio-Neural activity)
+        # Calculated via dynamic action potential voltage scaling (scaled in milliwatts/watts)
+        electrical_power_watts = 2.5 + 1.2 * np.sin(2 * np.pi * 500e3 * time_seconds) + 0.5 * np.cos(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+        
+        # 3. Biomagnetic Signal & Echo Rate
+        magnetic_signal = 50.0 + 25.0 * np.sin(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+        echo_sequence = 35.0 + 10.0 * np.cos(2 * np.pi * (self.base_bpm / 60) * time_seconds + np.pi/6)
+
+        return ns_steps, cardiac_sequence, electrical_power_watts, magnetic_signal, echo_sequence
+
+    def render_power_telemetry_dashboard(self):
+        ns_steps, cardiac, power_watts, magnetic, echo = self.simulate_power_and_sequences()
+
+        plt.style.use('dark_background')
+        fig, axes = plt.subplots(4, 1, figsize=(14, 12), sharex=True)
+
+        # Plot 1: Cardiac Sequence (72 BPM)
+        axes[0].plot(ns_steps, cardiac, color='#FF2400', linewidth=2.2, label='Cardiac Sequence (72 BPM Baseline)')
+        axes[0].set_title("EVER-TIME Sovereign Engine: Nanosecond Electrical Power & Telemetry Matrix", fontsize=13, color='white', fontweight='bold')
+        axes[0].legend(loc='upper right')
+        axes[0].grid(True, color='#333333', linestyle=':')
+
+        # Plot 2: Electrical Power Throughput (Watts / second)
+        axes[1].plot(ns_steps, power_watts, color='#FFD700', linewidth=2.2, label='Electrical Power Throughput (Watts / sec)')
+        axes[1].set_ylabel("Power (Watts)", color='white')
+        axes[1].legend(loc='upper right')
+        axes[1].grid(True, color='#333333', linestyle=':')
+
+        # Plot 3: Biomagnetic Signal (pT)
+        axes[2].plot(ns_steps, magnetic, color='#00CC99', linewidth=2.0, label='Biomagnetic Field Signal (picoTesla)')
+        axes[2].set_ylabel("Magnetic (pT)", color='white')
+        axes[2].legend(loc='upper right')
+        axes[2].grid(True, color='#333333', linestyle=':')
+
+        # Plot 4: Echo Rate Doppler Sequence
+        axes[3].plot(ns_steps, echo, color='#33CCFF', linewidth=1.8, linestyle='--', label='Echo Rate Doppler Matrix Sequence')
+        axes[3].set_xlabel("Timeline (Nanoseconds - ns)", color='white')
+        axes[3].set_ylabel("Velocity", color='white')
+        axes[3].legend(loc='upper right')
+        axes[3].grid(True, color='#333333', linestyle=':')
+
+        plt.tight_layout()
+        plt.savefig("ever_time_power_telemetry.png", dpi=300)
+        print("[SUCCESS] Electrical Power & Nanosecond Telemetry Dashboard generated successfully for My Lab by Abdul Majeed!")
+        plt.show()
+
+if __name__ == "__main__":
+    engine = EverTimePowerTelemetryEngine()
+    engine.render_power_telemetry_dashboard()
