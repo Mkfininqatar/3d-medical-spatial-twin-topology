@@ -452,3 +452,79 @@ mean_speed = np.mean(list(conduction_velocities.values()))
 print(f"Mean Normal Signal Propagation Speed: {mean_speed:.2f} m/s")
 for part, speed in conduction_velocities.items():
     print(f"- {part}: {speed} m/s")
+import numpy as np
+import matplotlib.pyplot as plt
+
+class EverTimeMasterTelemetryEngine:
+    def __init__(self):
+        # Full Sovereign Anatomical Mesh & Velocity Configuration
+        self.structural_config = {
+            "Heart (Cardio Chamber)": {"triangles": 48000, "vertices": 35000, "speed_ms": 4.0, "color": "#FF2400"},
+            "Stomach (Metabolic Core)": {"triangles": 42000, "vertices": 31000, "speed_ms": 15.0, "color": "#FF8C00"},
+            "Cerebrum & Cerebellum": {"triangles": 109416, "vertices": 81064, "speed_ms": 25.0, "color": "#9933CC"},
+            "Spinal Pathways": {"triangles": 28416, "vertices": 21000, "speed_ms": 75.0, "color": "#33CCFF"},
+            "Nerve System & Pathways": {"triangles": 12864, "vertices": 9500, "speed_ms": 90.0, "color": "#00CED1"}
+        }
+        self.base_bpm = 72.0 # Sovereign Resting Frequency
+
+    def simulate_master_telemetry(self, duration_ns=1000000, step_ns=10):
+        """
+        Simulates nanosecond-scale sequences, stomach kW refinement, 
+        nerve vibration waves (Hz), and signal propagation velocities (m/s).
+        """
+        ns_steps = np.arange(0, duration_ns, step_ns)
+        time_seconds = ns_steps * 1e-9  # Convert nanoseconds to seconds
+        
+        # 1. Cardiac Rhythm Sequence (72 BPM baseline with Red Phase Wave Doppler logic)
+        cardiac_sequence = self.base_bpm + 15 * np.sin(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+        
+        # 2. Stomach Kilowatt Energy Refinement (kW)
+        stomach_kilowatt = 1.25 + 0.45 * np.sin(2 * np.pi * 200e3 * time_seconds)
+        
+        # 3. Nerve System Vibration Frequency (Waves per second / Hz)
+        nerve_vibration_hz = 40.0 + 15.0 * np.sin(2 * np.pi * 40 * time_seconds) + 5.0 * np.cos(2 * np.pi * 120 * time_seconds)
+        
+        # 4. Signal Propagation Speed Matrix (Dynamic blending from 4 m/s to 90 m/s)
+        propagation_velocity = 48.5 + 41.5 * np.sin(2 * np.pi * 100e3 * time_seconds)
+
+        return ns_steps, cardiac_sequence, stomach_kilowatt, nerve_vibration_hz, propagation_velocity
+
+    def render_master_dashboard(self):
+        ns_steps, cardiac, stomach_kw, nerve_hz, velocity = self.simulate_master_telemetry()
+
+        plt.style.use('dark_background')
+        fig, axes = plt.subplots(4, 1, figsize=(14, 12), sharex=True)
+
+        # Plot 1: Cardiac Rhythm (72 BPM)
+        axes[0].plot(ns_steps, cardiac, color='#FF2400', linewidth=2.2, label='Cardiac Sequence: 72 BPM (Red Phase Wave)')
+        axes[0].set_title("EVER-TIME Sovereign Engine: Master Cardio-Neural & Metabolic Telemetry Matrix", fontsize=13, color='white', fontweight='bold')
+        axes[0].legend(loc='upper right')
+        axes[0].grid(True, color='#333333', linestyle=':')
+
+        # Plot 2: Stomach Kilowatt Refinement
+        axes[1].plot(ns_steps, stomach_kw, color='#FF8C00', linewidth=2.2, label='Stomach Core: Kilowatt Energy Refinement (kW)')
+        axes[1].set_ylabel("Power (kW)", color='white')
+        axes[1].legend(loc='upper right')
+        axes[1].grid(True, color='#333333', linestyle=':')
+
+        # Plot 3: Nerve System Vibration Frequency (Waves / sec)
+        axes[2].plot(ns_steps, nerve_hz, color='#00CED1', linewidth=2.2, label='Nerve System Vibration Frequency (Waves/sec - Hz)')
+        axes[2].set_ylabel("Frequency (Hz)", color='white')
+        axes[2].legend(loc='upper right')
+        axes[2].grid(True, color='#333333', linestyle=':')
+
+        # Plot 4: Signal Propagation Velocity (m/s)
+        axes[3].plot(ns_steps, velocity, color='#33CCFF', linewidth=2.0, linestyle='--', label='Signal Propagation Velocity (m/s)')
+        axes[3].set_xlabel("Timeline (Nanoseconds - ns)", color='white')
+        axes[3].set_ylabel("Velocity (m/s)", color='white')
+        axes[3].legend(loc='upper right')
+        axes[3].grid(True, color='#333333', linestyle=':')
+
+        plt.tight_layout()
+        plt.savefig("ever_time_master_telemetry.png", dpi=300)
+        print("[SUCCESS] Master Telemetry Dashboard generated successfully for My Lab by Abdul Majeed!")
+        plt.show()
+
+if __name__ == "__main__":
+    engine = EverTimeMasterTelemetryEngine()
+    engine.render_master_dashboard()
