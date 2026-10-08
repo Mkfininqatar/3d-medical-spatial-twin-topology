@@ -7,7 +7,43 @@ https://drive.google.com/drive/folders/1UNQtSZGqemOVNIBr5eJDaMBwecbOiUBL
 # Cardio-Neural Spatial Twin Telemetry Engine
 ## 🌟 Milestones & Institutional Recognition (Special Edition)
 ## 🙏 Acknowledgements & Institutional Support
+# 🔬 MY LAB BY ABDUL MAJEED
+> **Doha, Qatar** | *Technical Consulting & Digital Twin Architecture*
 
+---
+
+## ➔ Profile Overview
+* **Lead Architect & Consultant:** Abdul Majeed (Digital Twin Architect & HPC Telemetry Specialist)
+* **Core Specialization:** High-performance computing (HPC) telemetry systems, 3D medical spatial-temporal logging frameworks, and sovereign bio-digital twin architectures.
+* **Key Dedication:** Dedicated to **Leader Tamim** and **Late Father Amir Sheikh Hamad bin Khalifa Al Thani** 🇶🇦
+
+---
+
+## ➔ Flagship Projects & Innovations
+
+* **EVER-TIME: Sovereign Main Integrated Engine**
+  * Advanced cardio-neural digital twin telemetry combining $72\text{ BPM}$ sovereign resting frequency locks, $50\text{ Hz}$ neural pulses, and $432\text{ kHz}$ crystal resonance.
+  * Built with fault-tolerant auto-run protocols, bad sector isolation, and real-time binary stream decoding.
+
+* **3D Medical Spatial Twin Topology**
+  * Integrates anatomical mesh structures (Heart, Cerebrum, Cerebellum, Thalamus, Midbrain, and Spinal Cord) comprising over $278,276$ triangles and $198,632$ vertices for full-spectrum biological simulation.
+
+* **HPC Telemetry Engine (`hpc_telemetry.py`)**
+  * Developed robust Python-based monitoring engines to track real-time hardware metrics, CPU load, memory utilization, temperature, and PMIC voltage under GitHub (`Mkfininqatar`).
+
+---
+
+## ➔ Research & Vision
+* **Vision:** Merging advanced high-performance computing, spatial topology, and human biology to establish sovereign digital twin intelligence in alignment with Qatar's technological roadmap.
+* **Communication & Collaboration:** Operating through secure multi-physics telemetry pipelines and high-precision digital workflows.
+
+---
+
+### 💻 Quick Run (Telemetry Simulation)
+You can test the core telemetry simulation locally using Python:
+
+```bash
+python3 ever_time_main_chip_integrated_engine.py
 Achieving this zero-drift temporal synchronization ($0.00\,\mu\text{s}$) and advancing our cardio-neural spatial-temporal telemetry framework would not have been possible without the continuous institutional support and collaborative environment provided by the **MCIT Innovation Lab** and the **DIC referral context**. 
 
 We extend our sincere appreciation for their visionary backing, paving the way for cutting-edge high-performance medical spatial computing and next-generation digital twin infrastructure under QNV 2030 standards. 🧠⚡
