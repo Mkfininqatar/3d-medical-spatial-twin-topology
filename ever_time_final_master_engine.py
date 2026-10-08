@@ -1444,3 +1444,80 @@ class EverTimeCrystalBinaryEngine:
 if __name__ == "__main__":
     engine = EverTimeCrystalBinaryEngine()
     engine.render_crystal_binary_dashboard()
+import numpy as np
+import matplotlib.pyplot as plt
+
+class EverTimeBadSectorAutoRunEngine:
+    def __init__(self):
+        self.base_bpm = 72.0 # Sovereign Resting Frequency
+
+    def simulate_badsector_autorun(self, duration_ns=1000000, step_ns=10):
+        ns_steps = np.arange(0, duration_ns, step_ns)
+        time_seconds = ns_steps * 1e-9  # Convert nanoseconds to seconds
+        
+        # 1. Binary Image Stream with Simulated "Bad Sectors" (Corrupted noise drops)
+        binary_stream = 50.0 * np.sin(2 * np.pi * 300e3 * time_seconds)
+        
+        # Injecting Bad Sector / Corrupted Binary Windows (Sudden drop and noise spikes)
+        bad_sector_window_1 = (time_seconds >= 0.00025) & (time_seconds <= 0.00040)
+        bad_sector_window_2 = (time_seconds >= 0.00070) & (time_seconds <= 0.00085)
+        
+        binary_stream[bad_sector_window_1] = np.random.normal(0, 25, size=np.sum(bad_sector_window_1)) # Noise corruption
+        binary_stream[bad_sector_window_2] = -45.0 # Dead drop / Sector lock
+        
+        # 2. Auto-Run Recovery & Isolation Flag (1 = Normal, 5 = Auto-Repair / Isolation Active)
+        auto_repair_flag = np.ones_like(time_seconds)
+        auto_repair_flag[bad_sector_window_1] = 5.0
+        auto_repair_flag[bad_sector_window_2] = 5.0
+        
+        # 3. Nerve System Vibration Frequency (Hz) - Recovering stability after auto-run
+        nerve_vibration_hz = 40.0 + 15.0 * np.sin(2 * np.pi * 40 * time_seconds)
+        nerve_vibration_hz[bad_sector_window_1] -= 25.0 # Dip during corruption
+        nerve_vibration_hz[bad_sector_window_2] -= 30.0
+        
+        # 4. Cardiac Sequence (72 BPM Sovereign Baseline with protective dampening)
+        cardiac_sequence = self.base_bpm + 8 * np.sin(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+
+        return ns_steps, binary_stream, auto_repair_flag, nerve_vibration_hz, cardiac_sequence
+
+    def render_autorun_dashboard(self):
+        ns_steps, binary_stream, repair_flag, nerve_hz, cardiac = self.simulate_badsector_autorun()
+
+        plt.style.use('dark_background')
+        fig, axes = plt.subplots(4, 1, figsize=(14, 12), sharex=True)
+
+        # Plot 1: Binary Image Stream with Bad Sectors
+        axes[0].plot(ns_steps, binary_stream, color='#FF3333', linewidth=1.8, label='Binary Image Stream (Bad Sectors & Corruption Detected)')
+        axes[0].set_title("EVER-TIME Sovereign Engine: Bad Sector & Bad Binary Auto-Run Simulation", fontsize=13, color='white', fontweight='bold')
+        axes[0].set_ylabel("Binary Amplitude", color='white')
+        axes[0].legend(loc='upper right')
+        axes[0].grid(True, color='#333333', linestyle=':')
+
+        # Plot 2: Auto-Run Repair & Isolation Flag
+        axes[1].plot(ns_steps, repair_flag, color='#00FF66', linewidth=2.4, label='Auto-Run Brain Repair & Sector Isolation State (Active = 5)')
+        axes[1].fill_between(ns_steps, 1, repair_flag, color='#00FF66', alpha=0.3)
+        axes[1].set_ylabel("Repair Mode", color='white')
+        axes[1].legend(loc='upper right')
+        axes[1].grid(True, color='#333333', linestyle=':')
+
+        # Plot 3: Nerve System Vibration Frequency (Hz)
+        axes[2].plot(ns_steps, nerve_hz, color='#00FFFF', linewidth=2.0, label='Nerve System Vibration (Post-Repair Coherence Hz)')
+        axes[2].set_ylabel("Frequency (Hz)", color='white')
+        axes.legend = axes[2].legend(loc='upper right')
+        axes[2].grid(True, color='#333333', linestyle=':')
+
+        # Plot 4: Cardiac Sequence (72 BPM Baseline)
+        axes[3].plot(ns_steps, cardiac, color='#FF2400', linewidth=2.0, label='Cardiac Sequence: 72 BPM Baseline Lock')
+        axes[3].set_xlabel("Timeline (Nanoseconds - ns)", color='white')
+        axes[3].set_ylabel("BPM", color='white')
+        axes[3].legend(loc='upper right')
+        axes[3].grid(True, color='#333333', linestyle=':')
+
+        plt.tight_layout()
+        plt.savefig("ever_time_badsector_autorun_dashboard.png", dpi=300)
+        print("[SUCCESS] Bad Sector & Bad Binary Auto-Run Simulation Dashboard generated successfully for My Lab by Abdul Majeed!")
+        plt.show()
+
+if __name__ == "__main__":
+    engine = EverTimeBadSectorAutoRunEngine()
+    engine.render_autorun_dashboard()
