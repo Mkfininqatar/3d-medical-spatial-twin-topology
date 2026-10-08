@@ -888,3 +888,73 @@ class EverTimeHappinessSignalEngine:
 if __name__ == "__main__":
     engine = EverTimeHappinessSignalEngine()
     engine.render_happiness_dashboard()
+import numpy as np
+import matplotlib.pyplot as plt
+
+class EverTimeStressSignalEngine:
+    def __init__(self):
+        self.base_bpm = 72.0 # Sovereign Resting Frequency
+
+    def simulate_stress_telemetry(self, duration_ns=1000000, step_ns=10):
+        ns_steps = np.arange(0, duration_ns, step_ns)
+        time_seconds = ns_steps * 1e-9  # Convert nanoseconds to seconds
+        
+        # 1. Stress / Sympathetic Surge Signal (Adrenaline & Cortisol spike waveform)
+        stress_signal = 40.0 + 20.0 * np.sin(2 * np.pi * 100e3 * time_seconds)
+        stress_window = (time_seconds >= 0.0003) & (time_seconds <= 0.0008)
+        stress_signal[stress_window] += 60.0 * np.sin(2 * np.pi * 500e3 * time_seconds[stress_window])
+        
+        # 2. Cardiac Rhythm Sequence (Elevated heart rate / tachycardia during stress window)
+        cardiac_sequence = self.base_bpm + 15 * np.sin(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+        cardiac_sequence[stress_window] += 38.0 # Jump to elevated stress BPM
+        
+        # 3. Nerve System Vibration Frequency (Hz) - Sharp rise during stress response
+        nerve_vibration_hz = 40.0 + 15.0 * np.sin(2 * np.pi * 40 * time_seconds)
+        nerve_vibration_hz[stress_window] += 35.0 # High beta/gamma frequency spike
+        
+        # 4. Stomach Kilowatt Energy Refinement (kW) - Metabolic resource reallocation
+        stomach_kilowatt = 1.25 + 0.45 * np.sin(2 * np.pi * 200e3 * time_seconds)
+        stomach_kilowatt[stress_window] -= 0.35 # Temporary metabolic suppression during acute flight-or-flight
+
+        return ns_steps, stress_signal, cardiac_sequence, nerve_vibration_hz, stomach_kilowatt
+
+    def render_stress_dashboard(self):
+        ns_steps, stress_sig, cardiac, nerve_hz, stomach_kw = self.simulate_stress_telemetry()
+
+        plt.style.use('dark_background')
+        fig, axes = plt.subplots(4, 1, figsize=(14, 12), sharex=True)
+
+        # Plot 1: Stress / Sympathetic Surge Signal
+        axes[0].plot(ns_steps, stress_sig, color='#FF3333', linewidth=2.4, label='Stress Signal (Sympathetic / Adrenaline Surge)')
+        axes[0].set_title("EVER-TIME Sovereign Engine: Stress Signal & Sympathetic Telemetry Matrix", fontsize=13, color='white', fontweight='bold')
+        axes[0].set_ylabel("Amplitude", color='white')
+        axes[0].legend(loc='upper right')
+        axes[0].grid(True, color='#333333', linestyle=':')
+
+        # Plot 2: Elevated Cardiac Sequence (Tachycardia Spike)
+        axes[1].plot(ns_steps, cardiac, color='#FF9900', linewidth=2.2, label='Cardiac Sequence (Elevated Stress Response / BPM)')
+        axes[1].set_ylabel("BPM", color='white')
+        axes[1].legend(loc='upper right')
+        axes[1].grid(True, color='#333333', linestyle=':')
+
+        # Plot 3: Nerve System Vibration Frequency (Hz)
+        axes[2].plot(ns_steps, nerve_hz, color='#00CED1', linewidth=2.0, label='Nerve System Vibration (High-Frequency Stress Spike)')
+        axes[2].set_ylabel("Frequency (Hz)", color='white')
+        axes[2].legend(loc='upper right')
+        axes[2].grid(True, color='#333333', linestyle=':')
+
+        # Plot 4: Stomach Kilowatt Refinement
+        axes[3].plot(ns_steps, stomach_kw, color='#FF8C00', linewidth=2.0, linestyle='--', label='Stomach Core: Kilowatt Energy Refinement (kW)')
+        axes[3].set_xlabel("Timeline (Nanoseconds - ns)", color='white')
+        axes[3].set_ylabel("Power (kW)", color='white')
+        axes[3].legend(loc='upper right')
+        axes[3].grid(True, color='#333333', linestyle=':')
+
+        plt.tight_layout()
+        plt.savefig("ever_time_stress_signal_dashboard.png", dpi=300)
+        print("[SUCCESS] Stress Signal Telemetry Dashboard generated successfully for My Lab by Abdul Majeed!")
+        plt.show()
+
+if __name__ == "__main__":
+    engine = EverTimeStressSignalEngine()
+    engine.render_stress_dashboard()
