@@ -358,3 +358,78 @@ class EverTimeStomachRefinementEngine:
 if __name__ == "__main__":
     engine = EverTimeStomachRefinementEngine()
     engine.render_stomach_refinement_dashboard()
+import numpy as np
+import matplotlib.pyplot as plt
+
+class EverTimeNervousVibrationEngine:
+    def __init__(self):
+        # Structural Mesh Configuration including Nervous Pathways & Core Systems
+        self.structural_config = {
+            "Nerve System & Spinal Pathways": {"triangles": 41280, "vertices": 30500, "color": "#00CED1"},
+            "Stomach (Metabolic Core)": {"triangles": 42000, "vertices": 31000, "color": "#FF8C00"},
+            "Heart (Cardio Chamber)": {"triangles": 48000, "vertices": 35000, "color": "#FF2400"},
+            "Cerebrum & Cerebellum": {"triangles": 109416, "vertices": 81064, "color": "#9933CC"}
+        }
+        self.base_bpm = 72.0 # Sovereign Resting Frequency
+
+    def simulate_nervous_vibrations(self, duration_ns=1000000, step_ns=10):
+        """
+        Simulates nanosecond nervous system vibration waves per second (Hz) 
+        alongside stomach kilowatt refinement and cardiac telemetry.
+        """
+        ns_steps = np.arange(0, duration_ns, step_ns)
+        time_seconds = ns_steps * 1e-9  # Convert nanoseconds to seconds
+        
+        # 1. Nerve System Vibration Frequency (Waves per second / Hz tracking e.g., 40Hz Gamma oscillation)
+        nerve_vibration_hz = 40.0 + 15.0 * np.sin(2 * np.pi * 40 * time_seconds) + 5.0 * np.cos(2 * np.pi * 120 * time_seconds)
+        
+        # 2. Stomach Kilowatt Energy Refinement (kW)
+        stomach_kilowatt = 1.25 + 0.45 * np.sin(2 * np.pi * 200e3 * time_seconds)
+        
+        # 3. Cardiac Rhythm Sequence (72 BPM baseline)
+        cardiac_sequence = self.base_bpm + 15 * np.sin(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+        
+        # 4. Biomagnetic Field Signal (pT)
+        magnetic_signal = 50.0 + 25.0 * np.sin(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+
+        return ns_steps, nerve_vibration_hz, stomach_kilowatt, cardiac_sequence, magnetic_signal
+
+    def render_dashboard(self):
+        ns_steps, nerve_hz, stomach_kw, cardiac, magnetic = self.simulate_nervous_vibrations()
+
+        plt.style.use('dark_background')
+        fig, axes = plt.subplots(4, 1, figsize=(14, 12), sharex=True)
+
+        # Plot 1: Nerve System Vibration Frequencies (Waves / sec)
+        axes[0].plot(ns_steps, nerve_hz, color='#00CED1', linewidth=2.2, label='Nerve System Vibration Frequency (Waves/sec - Hz)')
+        axes[0].set_title("EVER-TIME Sovereign Engine: Nerve System Vibration & Wave Telemetry Matrix", fontsize=13, color='white', fontweight='bold')
+        axes[0].legend(loc='upper right')
+        axes[0].grid(True, color='#333333', linestyle=':')
+
+        # Plot 2: Stomach Kilowatt Refinement
+        axes[1].plot(ns_steps, stomach_kw, color='#FF8C00', linewidth=2.2, label='Stomach Core: Kilowatt Energy Refinement (kW)')
+        axes[1].set_ylabel("Power (kW)", color='white')
+        axes[1].legend(loc='upper right')
+        axes[1].grid(True, color='#333333', linestyle=':')
+
+        # Plot 3: Cardiac Sequence (72 BPM)
+        axes[2].plot(ns_steps, cardiac, color='#FF2400', linewidth=2.0, label='Cardiac Sequence (72 BPM Baseline)')
+        axes[2].set_ylabel("BPM", color='white')
+        axes[2].legend(loc='upper right')
+        axes[2].grid(True, color='#333333', linestyle=':')
+
+        # Plot 4: Biomagnetic Field Signal (pT)
+        axes[3].plot(ns_steps, magnetic, color='#00CC99', linewidth=1.8, linestyle='--', label='Biomagnetic Field Signal (picoTesla)')
+        axes[3].set_xlabel("Timeline (Nanoseconds - ns)", color='white')
+        axes[3].set_ylabel("Magnetic (pT)", color='white')
+        axes[3].legend(loc='upper right')
+        axes[3].grid(True, color='#333333', linestyle=':')
+
+        plt.tight_layout()
+        plt.savefig("ever_time_nerve_vibration_dashboard.png", dpi=300)
+        print("[SUCCESS] Nerve System Vibration & Wave Telemetry Dashboard generated successfully for My Lab by Abdul Majeed!")
+        plt.show()
+
+if __name__ == "__main__":
+    engine = EverTimeNervousVibrationEngine()
+    engine.render_dashboard()
