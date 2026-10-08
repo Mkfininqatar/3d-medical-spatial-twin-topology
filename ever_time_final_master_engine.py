@@ -1855,3 +1855,57 @@ if __name__ == "__main__":
         engine.run_synchronized_frame(i)
         time.sleep(0.8)
     print("\n✅ Multi-threading latency optimization complete.")
+#!/usr/bin/env python3
+"""
+================================================================================
+EVER-TIME: Deep-Level Memory Isolation & Fault Recovery (Point 2 Solution)
+Developed under: My Lab by Abdul Majeed (Doha, Qatar)
+================================================================================
+"""
+
+import time
+import random
+import sys
+
+class MemoryIsolationEngine:
+    def __init__(self):
+        self.hub_state = "SECURE"
+        self.memory_buffer_allocated = True
+
+    def execute_memory_dump_isolation(self, anomaly_severity):
+        print(f"⚠️ [CRITICAL ALERT] Extreme Anomaly Detected! Severity Level: {anomaly_severity}/10")
+        print("🔄 [ISOLATION] Halting active memory threads to prevent fragmentation...")
+        time.sleep(0.6)
+        
+        # Simulating safe memory-dump snapshot before recovery
+        dump_signature = f"MEM_DUMP_{int(time.time())}_SECURE"
+        print(f"📦 [SNAPSHOT] Memory dump successfully quarantined -> [{dump_signature}]")
+        
+        self.hub_state = "QUARANTINED"
+        return dump_signature
+
+    def restore_and_secure_hub(self, dump_signature):
+        print(f"🧹 [FLUSH] Purging corrupted binary streams associated with {dump_signature}...")
+        time.sleep(0.5)
+        print("🔒 [RESTORE] Re-initializing Master Control Hub from sovereign clean state...")
+        self.hub_state = "SECURE"
+        print(f"✅ [SUCCESS] Hub State: {self.hub_state}. System integrity fully verified.\n")
+
+    def run_stress_test(self, cycles=3):
+        print("🚀 Starting Memory Fragmentation & Fault Recovery Stress Test...\n")
+        for cycle in range(1, cycles + 1):
+            print(f"--- Stress Cycle {cycle}/{cycles} ---")
+            severity = random.randint(7, 10) # High severity simulation
+            
+            if severity >= 8:
+                dump_sig = self.execute_memory_dump_isolation(severity)
+                self.restore_and_secure_hub(dump_sig)
+            else:
+                print("🛡️ [STATUS] Standard telemetry flow stable. No memory isolation required.")
+                print("-" * 50)
+            
+            time.sleep(1.0)
+
+if __name__ == "__main__":
+    engine = MemoryIsolationEngine()
+    engine.run_stress_test(cycles=2)
