@@ -1023,3 +1023,72 @@ class EverTimeBalanceModeEngine:
 if __name__ == "__main__":
     engine = EverTimeBalanceModeEngine()
     engine.render_balance_dashboard()
+import numpy as np
+import matplotlib.pyplot as plt
+
+class EverTimeDreamRemEngine:
+    def __init__(self):
+        self.base_bpm = 72.0 # Sovereign Resting Frequency
+
+    def simulate_dream_rem_telemetry(self, duration_ns=1000000, step_ns=10):
+        ns_steps = np.arange(0, duration_ns, step_ns)
+        time_seconds = ns_steps * 1e-9  # Convert nanoseconds to seconds
+        
+        # 1. Dream / REM Signal (Rapid eye movement & vivid neural simulation bursts - Theta/Gamma coupling)
+        dream_signal = 45.0 + 20.0 * np.sin(2 * np.pi * 6e3 * time_seconds) # Theta/Alpha background
+        rem_window = (time_seconds >= 0.00035) & (time_seconds <= 0.00075)
+        dream_signal[rem_window] += 55.0 * np.sin(2 * np.pi * 350e3 * time_seconds[rem_window])
+        
+        # 2. Nerve System Vibration Frequency (Hz) - Shifts to high-activity Theta/Gamma range during REM
+        nerve_vibration_hz = 30.0 + 10.0 * np.sin(2 * np.pi * 7 * time_seconds) # Theta base
+        nerve_vibration_hz[rem_window] += 25.0 # REM cognitive activation spike
+        
+        # 3. Cardiac Sequence (REM Heart Rate Variability - slight surge during dreams)
+        cardiac_sequence = self.base_bpm + 10 * np.sin(2 * np.pi * (self.base_bpm / 60) * time_seconds)
+        cardiac_sequence[rem_window] += 18.0 # Vivid dream autonomic elevation
+        
+        # 4. Stomach Kilowatt Energy Refinement (kW) - Basal metabolic state during sleep
+        stomach_kilowatt = 1.05 + 0.35 * np.sin(2 * np.pi * 150e3 * time_seconds)
+
+        return ns_steps, dream_signal, nerve_vibration_hz, cardiac_sequence, stomach_kilowatt
+
+    def render_dream_dashboard(self):
+        ns_steps, dream_sig, nerve_hz, cardiac, stomach_kw = self.simulate_dream_rem_telemetry()
+
+        plt.style.use('dark_background')
+        fig, axes = plt.subplots(4, 1, figsize=(14, 12), sharex=True)
+
+        # Plot 1: Dream / REM Neural Signal
+        axes[0].plot(ns_steps, dream_sig, color='#9933FF', linewidth=2.4, label='Dream & REM Signal (Neural Simulation Bursts)')
+        axes[0].set_title("EVER-TIME Sovereign Engine: Dream & REM Sleep Telemetry Matrix", fontsize=13, color='white', fontweight='bold')
+        axes[0].set_ylabel("Amplitude", color='white')
+        axes[0].legend(loc='upper right')
+        axes[0].grid(True, color='#333333', linestyle=':')
+
+        # Plot 2: Nerve System Vibration Frequency (Hz)
+        axes[1].plot(ns_steps, nerve_hz, color='#00CED1', linewidth=2.0, label='Nerve System Vibration (Theta/REM Activation Hz)')
+        axes[1].set_ylabel("Frequency (Hz)", color='white')
+        axes[1].legend(loc='upper right')
+        axes[1].grid(True, color='#333333', linestyle=':')
+
+        # Plot 3: Cardiac Sequence (REM Variability)
+        axes[2].plot(ns_steps, cardiac, color='#FF2400', linewidth=2.0, label='Cardiac Sequence (REM Autonomic Variability)')
+        axes[2].set_ylabel("BPM", color='white')
+        axes[2].legend(loc='upper right')
+        axes[2].grid(True, color='#333333', linestyle=':')
+
+        # Plot 4: Stomach Kilowatt Refinement
+        axes[3].plot(ns_steps, stomach_kw, color='#FF8C00', linewidth=2.0, linestyle='--', label='Stomach Core: Kilowatt Energy Refinement (kW)')
+        axes[3].set_xlabel("Timeline (Nanoseconds - ns)", color='white')
+        axes[3].set_ylabel("Power (kW)", color='white')
+        axes[3].legend(loc='upper right')
+        axes[3].grid(True, color='#333333', linestyle=':')
+
+        plt.tight_layout()
+        plt.savefig("ever_time_dream_rem_dashboard.png", dpi=300)
+        print("[SUCCESS] Dream & REM Signal Telemetry Dashboard generated successfully for My Lab by Abdul Majeed!")
+        plt.show()
+
+if __name__ == "__main__":
+    engine = EverTimeDreamRemEngine()
+    engine.render_dream_dashboard()
